@@ -4,12 +4,13 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using SimpleIoc.Contracts;
 
 namespace SimpleIoc
 {
     public class Container
     {
-        private readonly Dictionary<String, Service> _typesByGuid = new Dictionary<String, Service>();
+        private readonly Dictionary<String, IService> _typesByGuid = new Dictionary<String, IService>();
 
         /// <summary>
         /// Register the given service (<typeparamref name="TService"/>) as the given contract (<typeparamref name="TContract"/>).
@@ -36,6 +37,18 @@ namespace SimpleIoc
             var typeId = CreateTypeId<TContract>(a_name);
 
             _typesByGuid[typeId] = new Service(this, typeof(TService));
+        }
+
+        /// <summary>
+        /// Register the given service function (<paramref name="a_func"/>) as the given contract (<typeparamref name="TContract"/>).
+        /// </summary>
+        /// <typeparam name="TContract">Type of contract.</typeparam>
+        /// <param name="a_func">Service function.</param>
+        public void Register<TContract>(Func<TContract> a_func)
+        {
+            var typeId = CreateTypeId<TContract>();
+
+            _typesByGuid[typeId] = new FuncService<TContract>(a_func);
         }
 
         /// <summary>
@@ -75,7 +88,7 @@ namespace SimpleIoc
         /// </summary>
         /// <param name="a_type"></param>
         /// <returns>Resolved service.</returns>
-        internal Service ResolveService(Type a_type)
+        internal IService ResolveService(Type a_type)
         {
             var typeId = CreateTypeId(a_type);
 

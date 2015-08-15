@@ -6,7 +6,7 @@ using SimpleIoc.Contracts;
 
 namespace SimpleIoc
 {
-    public class Service
+    public class Service : IService
     {
         private readonly Container _container;
         private IServiceFactory[] _factories;

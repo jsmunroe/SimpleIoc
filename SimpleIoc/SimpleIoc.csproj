@@ -43,8 +43,11 @@
     <Compile Include="ConstructorFactory.cs" />
     <Compile Include="Container.cs" />
     <Compile Include="ContainerException.cs" />
+    <Compile Include="Contracts\IService.cs" />
     <Compile Include="Contracts\IServiceFactory.cs" />
     <Compile Include="Dependency.cs" />
+    <Compile Include="FuncFactory.cs" />
+    <Compile Include="FuncService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service.cs" />
   </ItemGroup>

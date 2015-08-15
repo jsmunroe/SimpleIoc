@@ -1,10 +1,11 @@
 ﻿using System;
+using SimpleIoc.Contracts;
 
 namespace SimpleIoc
 {
     public class Dependency
     {
-        private Service _service;
+        private IService _service;
 
         /// <summary>
         /// Constructor.
@@ -39,7 +40,7 @@ namespace SimpleIoc
         /// <param name="a_service">Fulfilling service.</param>
         /// <exception cref="ArgumentNullException">Thrown if "<paramref name="a_service"/>" is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown if "<paramref name="a_service"/>" is not the right type to fulfill this dependency.</exception>
-        public void Fulfill(Service a_service)
+        public void Fulfill(IService a_service)
         {
             #region Argument Validation
 

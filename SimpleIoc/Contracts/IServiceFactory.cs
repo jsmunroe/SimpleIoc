@@ -5,7 +5,7 @@
         /// <summary>
         /// Dependency complexity. 
         /// </summary>
-        int DependencyComplexity { get; set; }
+        int DependencyComplexity { get; }
 
         /// <summary>
         /// Dependencies of this factory.

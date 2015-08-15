@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace SimpleIoc.Test
 {
     [TestClass]
-    public class ConstructorServiceFactoryTest
+    public class ConstructorFactoryTest
     {
         [TestMethod]
         public void ConstructConstructorServiceFactory()

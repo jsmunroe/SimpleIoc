@@ -96,6 +96,42 @@ namespace SimpleIoc.Test
             // Assert
             Assert.IsNotNull(service);
         }
+
+        [TestMethod]
+        public void RegisterFuncService()
+        {
+            // Setup
+            var container = new Container();
+
+            // Execute
+            container.Register<ServiceBase>(() => new ServiceWithNoConstructors());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void RegisterFuncServiceWithNull()
+        {
+            // Setup
+            var container = new Container();
+
+            // Execute
+            container.Register<ServiceBase>(a_func: null);
+        }
+
+        [TestMethod]
+        public void ResolveFuncService()
+        {
+            // Setup
+            var container = new Container();
+            container.Register<ServiceBase>(() => new ServiceWithNoConstructors());
+
+            // Execute
+            var result = container.Resolve<ServiceBase>();
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(ServiceWithNoConstructors));
+        }
     }
 
 
