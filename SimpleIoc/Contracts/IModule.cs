@@ -1,4 +1,4 @@
-namespace SimpleIoc.Modules
+namespace SimpleIoc.Contracts
 {
     public interface IModule
     {

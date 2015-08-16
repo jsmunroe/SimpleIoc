@@ -1,7 +1,7 @@
 using System;
 using SimpleIoc.Contracts;
 
-namespace SimpleIoc
+namespace SimpleIoc.Factories
 {
     public class FuncFactory<TContract> : IServiceFactory
     {

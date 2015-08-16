@@ -1,4 +1,6 @@
-﻿namespace SimpleIoc.Contracts
+﻿using SimpleIoc.Factories;
+
+namespace SimpleIoc.Contracts
 {
     public interface IServiceFactory
     {
