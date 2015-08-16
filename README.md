@@ -59,3 +59,6 @@ This is a simple to use universal inversion of control container.
     var modules = ModuleLoader.Discover();
     
     Assert.IsInstanceOfType(modules.First(), typeof(MyModule));
+    
+    var container = new Container();
+    modules.Bootstrap(container);
