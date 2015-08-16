@@ -30,5 +30,25 @@ namespace SimpleIoc.Modules
                     yield return module;
             }
         }
+
+        /// <summary>
+        /// Bootstrap each module in "this" sequence (<paramref name="a_this"/>).
+        /// </summary>
+        /// <param name="a_this">"This" sequence of modules.</param>
+        /// <param name="a_container">Container into which to bootstrap.</param>
+        public static void Bootstrap(this IEnumerable<IModule> a_this, Container a_container)
+        {
+            foreach (var module in a_this)
+                module.Bootstrap(a_container);
+        }
+
+        /// <summary>
+        /// Bootstrap all modules in this app domain into "this" container (<paramref name="a_container"/>).
+        /// </summary>
+        /// <param name="a_container">Container into which to bootstrap.</param>
+        public static void Bootstrap(this Container a_container)
+        {
+            Discover().Bootstrap(a_container);
+        }
     }
 }
