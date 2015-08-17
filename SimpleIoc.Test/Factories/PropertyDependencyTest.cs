@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SimpleIoc.Factories;
 
@@ -10,19 +11,25 @@ namespace SimpleIoc.Test.Factories
         [TestMethod]
         public void ConstructPropertyTest()
         {
+            // Setup
+            var property = typeof (ServiceWithRequiredProperty).GetProperty("Dependency");
+
             // Execute
-            var dependency = new PropertyDependency(typeof(ServiceBase), "Property");
+            var dependency = new PropertyDependency(typeof(ServiceBase), property);
 
             // Assert
-            Assert.AreSame("Property", dependency.PropertyName);
+            Assert.AreSame(property, dependency.Property);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void ConstrucWithNullConstract()
         {
+            // Setup
+            var property = typeof(ServiceWithRequiredProperty).GetProperty("Dependency");
+
             // Execute
-            new PropertyDependency(a_contract: null, a_propertyName: "PropertyName");
+            new PropertyDependency(a_contract: null, a_property: property);
         }
 
         [TestMethod]
@@ -30,8 +37,7 @@ namespace SimpleIoc.Test.Factories
         public void ConstructWithNullParamName()
         {
             // Execute
-            new PropertyDependency(a_contract: typeof(ServiceBase), a_propertyName: null);
+            new PropertyDependency(a_contract: typeof(ServiceBase), a_property: null);
         }
-
     }
 }

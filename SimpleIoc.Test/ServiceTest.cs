@@ -189,5 +189,23 @@ namespace SimpleIoc.Test
             Assert.AreEqual(".ctor(DependencyBase, Dependency2)", instance.Constructor);
         }
 
+        [TestMethod]
+        public void ResolveServiceForTypeWithRequiredProperty()
+        {
+            // Setup
+            var container = new Container();
+            container.Register<DependencyBase, Dependency1>();
+            var service = new Service(container, typeof(ServiceWithRequiredProperty));
+
+            // Execute 
+            var serviceInstance = service.Resolve();
+
+            // Assert
+            Assert.IsNotNull(serviceInstance);
+            Assert.IsInstanceOfType(serviceInstance, typeof(ServiceWithRequiredProperty));
+            var instance = serviceInstance as ServiceWithRequiredProperty;
+            Assert.IsInstanceOfType(instance.Dependency, typeof (Dependency1));
+        }
+
     }
 }

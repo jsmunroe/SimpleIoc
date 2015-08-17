@@ -52,6 +52,12 @@ namespace SimpleIoc.Test
         }
     }
 
+    public class ServiceWithRequiredProperty : ServiceBase
+    {
+        [Import]
+        public DependencyBase Dependency { get; set; }
+    }
+
     public class Dependency1 : DependencyBase
     {
 

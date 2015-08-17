@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Remoting.Channels;
 using SimpleIoc.Contracts;
 using SimpleIoc.Factories;
@@ -10,7 +11,6 @@ namespace SimpleIoc
     public class Service : IService
     {
         private readonly Container _container;
-        private IServiceFactory[] _factories;
 
         /// <summary>
         /// Constructor.
@@ -33,6 +33,8 @@ namespace SimpleIoc
 
             _container = a_container;
             Type = a_type;
+
+            Factories = DiscoverFactories();
         }
 
         /// <summary>
@@ -43,16 +45,7 @@ namespace SimpleIoc
         /// <summary>
         /// Factories available to create this service.
         /// </summary>
-        public IServiceFactory[] Factories
-        {
-            get
-            {
-                if (_factories == null)
-                    _factories = DiscoverFactories();
-
-                return _factories;
-            }
-        }
+        public IServiceFactory[] Factories { get; }
 
         /// <summary>
         /// Resolve an instance for this service.
@@ -75,6 +68,33 @@ namespace SimpleIoc
         }
 
         /// <summary>
+        /// Get property dependencies.
+        /// </summary>
+        /// <returns>Property dependencies.</returns>
+        internal IEnumerable<PropertyDependency> GetPropertyDependencies()
+        {
+            var items = from property in Type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                        let attr = property.GetCustomAttribute<ImportAttribute>()
+                        where property.CanWrite &&
+                              attr != null
+                        select new
+                        {
+                            Property = property,
+                            Attr = attr,
+                        };
+
+            foreach (var item in items)
+            {
+                var type = item.Property.PropertyType;
+
+                if (type.IsAssignableFrom(item.Attr.ContractType))
+                    type = item.Attr.ContractType;
+
+                yield return new PropertyDependency(type, item.Property);
+            }
+        }
+
+        /// <summary>
         /// Discover factories available for this service.
         /// </summary>
         /// <returns>Discovered factories.</returns>
@@ -89,5 +109,19 @@ namespace SimpleIoc
 
             return factories.OrderByDescending(i => i.DependencyComplexity).ToArray();
         }
+    }
+
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple= false, Inherited = false)]
+    public class ImportAttribute : Attribute
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:System.Attribute"/> class.
+        /// </summary>
+        public ImportAttribute(Type a_contractType = null)
+        {
+            ContractType = a_contractType;
+        }
+
+        public Type ContractType { get; }
     }
 }

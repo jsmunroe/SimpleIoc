@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using SimpleIoc.Contracts;
 
 namespace SimpleIoc.Factories
@@ -10,7 +12,8 @@ namespace SimpleIoc.Factories
         private readonly Service _service;
         private readonly ConstructorInfo _constructor;
 
-        private Dependency[] _dependencies; 
+        private ConstructorDependency[] _constructorDependencies;
+        private PropertyDependency[] _propertyDependencies;
 
         /// <summary>
         /// Constructor.
@@ -35,6 +38,7 @@ namespace SimpleIoc.Factories
             _constructor = a_constructor;
 
             DependencyComplexity = _constructor.GetParameters().Length;
+            DiscoverDependencies();
         }
 
         /// <summary>
@@ -49,10 +53,12 @@ namespace SimpleIoc.Factories
         {
             get
             {
-                if (_dependencies == null)
-                    _dependencies = DiscoverDependencies();
+                var dependencies = new List<Dependency>();
 
-                return _dependencies;
+                dependencies.AddRange(_constructorDependencies);
+                dependencies.AddRange(_propertyDependencies);
+
+                return dependencies.ToArray();
             }
         }
 
@@ -65,9 +71,10 @@ namespace SimpleIoc.Factories
         /// Discover the dependencies for this factory.
         /// </summary>
         /// <returns>Discovered dependencies.</returns>
-        private Dependency[] DiscoverDependencies()
+        private void DiscoverDependencies()
         {
-            return _constructor.GetParameters().Select(i => new Dependency(i.ParameterType)).ToArray();
+            _constructorDependencies = _constructor.GetParameters().Select(i => new ConstructorDependency(i.ParameterType, i.Name)).ToArray();
+            _propertyDependencies = _service.GetPropertyDependencies().ToArray();
         }
 
         /// <summary>
@@ -97,11 +104,16 @@ namespace SimpleIoc.Factories
             if (!CanCreate)
                 throw new InvalidOperationException("Cannot create this factory because not all of the dependencies have been fulfilled.");
 
-            var parameters = Dependencies.Select(i => i.Resolve()).ToArray();
+            var parameters = _constructorDependencies.Select(i => i.Resolve()).ToArray();
 
             // TODO: Discover attributed public property dependencies.
 
-            return _constructor.Invoke(parameters);
+            var instance = _constructor.Invoke(parameters);
+
+            foreach (var propertyDependency in _propertyDependencies)
+                propertyDependency.Apply(instance);                
+
+            return instance;
         }
 
     }

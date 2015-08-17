@@ -5,7 +5,7 @@ namespace SimpleIoc.Factories
 {
     public class Dependency
     {
-        private IService _service;
+        protected IService _service;
 
         /// <summary>
         /// Constructor.
