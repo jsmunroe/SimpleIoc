@@ -1,5 +1,6 @@
 ﻿using System;
 using SimpleIoc.Contracts;
+using SimpleIoc.Factories;
 
 namespace SimpleIoc
 {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Remoting.Channels;
 using SimpleIoc.Contracts;
+using SimpleIoc.Factories;
 
 namespace SimpleIoc
 {
@@ -83,7 +84,7 @@ namespace SimpleIoc
 
             var factories = new List<IServiceFactory>();
 
-            var constructorFactories = constructors.Select(i => new ConstructorFactory(this, i));
+            var constructorFactories = constructors.Select(i => new ActivateFactory(this, i));
             factories.AddRange(constructorFactories);
 
             return factories.OrderByDescending(i => i.DependencyComplexity).ToArray();

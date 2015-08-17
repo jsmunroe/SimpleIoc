@@ -41,7 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Factories\ConstructorDependency.cs" />
-    <Compile Include="Factories\ServiceFactory.cs" />
+    <Compile Include="Factories\PropertyDependency.cs" />
+    <Compile Include="Factories\ActivateFactory.cs" />
     <Compile Include="Container.cs" />
     <Compile Include="ContainerException.cs" />
     <Compile Include="Contracts\IService.cs" />

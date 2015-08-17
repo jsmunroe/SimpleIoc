@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SimpleIoc.Factories;
 
-namespace SimpleIoc.Test
+namespace SimpleIoc.Test.Factories
 {
     [TestClass]
-    public class ConstructorFactoryTest
+    public class ActivateFactoryTest
     {
         [TestMethod]
-        public void ConstructConstructorServiceFactory()
+        public void ConstructConstructorActivateFactory()
         {
             // Setup
             var container = new Container();
@@ -18,12 +18,12 @@ namespace SimpleIoc.Test
             var constructor = type.GetConstructors().First();
 
             // Execute
-            var serviceFactory = new ConstructorFactory(a_service: service, a_constructor: constructor);
+            var factory = new ActivateFactory(a_service: service, a_constructor: constructor);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void ConstructConstructorServiceFactoryWithNullService()
+        public void ConstructConstructorWithNullService()
         {
             // Setup
             var container = new Container();
@@ -32,12 +32,12 @@ namespace SimpleIoc.Test
             var constructor = type.GetConstructors().First();
 
             // Execute
-            var serviceFactory = new ConstructorFactory(a_service: null, a_constructor: constructor);
+            var factory = new ActivateFactory(a_service: null, a_constructor: constructor);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void ConstructConstructorServiceFactoryWithNullConstructor()
+        public void ConstructConstructorWithNullConstructor()
         {
             // Setup
             var container = new Container();
@@ -46,7 +46,7 @@ namespace SimpleIoc.Test
             var constructor = type.GetConstructors().First();
 
             // Execute
-            var serviceFactory = new ConstructorFactory(a_service: service, a_constructor: null);
+            var factory = new ActivateFactory(a_service: service, a_constructor: null);
         }
 
         [TestMethod]
@@ -57,13 +57,13 @@ namespace SimpleIoc.Test
             var service = new Service(container, typeof(ServiceWithDefaultConstructor));
             var type = typeof(ServiceWithDefaultConstructor);
             var constructor = type.GetConstructors().First();
-            var serviceFactory = new ConstructorFactory(a_service: service, a_constructor: constructor);
+            var factory = new ActivateFactory(a_service: service, a_constructor: constructor);
 
             // Execute
-            var result = serviceFactory.Create();
+            var result = factory.Create();
 
             // Asssert
-            Assert.AreEqual(0, serviceFactory.Dependencies?.Length);
+            Assert.AreEqual(0, factory.Dependencies?.Length);
             Assert.IsTrue(result is ServiceWithDefaultConstructor);
         }
 
@@ -76,10 +76,10 @@ namespace SimpleIoc.Test
             var service = new Service(container, typeof(ServiceWithOneConstructor));
             var type = typeof(ServiceWithOneConstructor);
             var constructor = type.GetConstructors().First();
-            var serviceFactory = new ConstructorFactory(a_service: service, a_constructor: constructor);
+            var factory = new ActivateFactory(a_service: service, a_constructor: constructor);
 
             // Execute
-            var result = serviceFactory.Create();
+            var result = factory.Create();
         }
 
         [TestMethod]
@@ -91,12 +91,12 @@ namespace SimpleIoc.Test
             var service = new Service(container, typeof(ServiceWithOneConstructor));
             var type = typeof(ServiceWithOneConstructor);
             var constructor = type.GetConstructors().First();
-            var serviceFactory = new ConstructorFactory(a_service: service, a_constructor: constructor);
+            var factory = new ActivateFactory(a_service: service, a_constructor: constructor);
 
-            var fulfilled = serviceFactory.Fulfill(a_container: container);
+            var fulfilled = factory.Fulfill(a_container: container);
 
             // Execute
-            var result = serviceFactory.Create();
+            var result = factory.Create();
 
             Assert.IsTrue(fulfilled);
             Assert.IsNotNull(result);

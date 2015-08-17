@@ -5,7 +5,7 @@ using SimpleIoc.Contracts;
 
 namespace SimpleIoc.Factories
 {
-    public class ServiceFactory : IServiceFactory
+    public class ActivateFactory : IServiceFactory
     {
         private readonly Service _service;
         private readonly ConstructorInfo _constructor;
@@ -19,7 +19,7 @@ namespace SimpleIoc.Factories
         /// <param name="a_constructor">Constructor used to create the instance.</param>
         /// <exception cref="ArgumentNullException">Thrown if "<paramref name="a_service"/>" is null.</exception>
         /// <exception cref="ArgumentNullException">Thrown if "<paramref name="a_constructor"/>" is null.</exception>
-        public ServiceFactory(Service a_service, ConstructorInfo a_constructor)
+        public ActivateFactory(Service a_service, ConstructorInfo a_constructor)
         {
             #region Argument Validation
 

@@ -1,7 +1,8 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SimpleIoc.Factories;
 
-namespace SimpleIoc.Test
+namespace SimpleIoc.Test.Factories
 {
     [TestClass]
     public class DependencyTest
