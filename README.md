@@ -19,7 +19,7 @@ This is a simple to use universal inversion of control container.
     public class MyDependency { ... }
     public class MyService : IContract 
     {
-        public Service(MyDependency dependency) { ... } 
+        public MyService(MyDependency dependency) { ... } 
     }
 
     var container = new Container();
@@ -35,7 +35,7 @@ This is a simple to use universal inversion of control container.
     public interface IContract { ... }
     public class MyService : IContract 
     {
-        public Service(String name, int age) { ... } 
+        public MyService(String name, int age) { ... } 
     }
     
     var someService = new MyService("My Service", 3);
@@ -46,6 +46,25 @@ This is a simple to use universal inversion of control container.
     
     Assert.AreSame(service, someService);
 
+##Property Injection
+
+    public interface IContract { ... } 
+    public MyDependency { ... }
+    public class MyService : IContract
+    {
+        // Must have a public setter
+        [Import]
+        public MyDependency Dependency { get; set; }
+    }
+    
+    var container = new Container();
+    container.Register<IContract, MyService>();
+    container.Register<MyDependency, MyDependency>();
+    
+    IContract service = container.Resolve<IContract>();    
+    
+    Assert.IsInstanceOfType((service as MyService).Dependency, typeof(MyDependency));
+    
 ##Module Loader
 
     public MyModule : IModule 
