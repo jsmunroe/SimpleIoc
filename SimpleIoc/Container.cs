@@ -26,6 +26,15 @@ namespace SimpleIoc
         }
 
         /// <summary>
+        /// Register the given service (<typeparamref name="TService"/>) as itself.
+        /// </summary>
+        /// <typeparam name="TService">Service type.</typeparam>
+        public void Register<TService>()
+        {
+            Register<TService, TService>();
+        }
+
+        /// <summary>
         /// Register the given service (<typeparamref name="TService"/>) as the given contract (<typeparamref name="TContract"/>) with the given name (<paramref name="a_name"/>).
         /// </summary>
         /// <param name="a_name">Service name.</param>
@@ -40,11 +49,34 @@ namespace SimpleIoc
         }
 
         /// <summary>
+        /// Register the given service (<typeparamref name="TService"/>) as itself  with the given name (<paramref name="a_name"/>).
+        /// </summary>
+        /// <typeparam name="TService">Service type.</typeparam>
+        /// <param name="a_name">Service name.</param>
+        public void Register<TService>(String a_name)
+        {
+            Register<TService, TService>(a_name);
+        }
+
+        /// <summary>
         /// Register the given service function (<paramref name="a_func"/>) as the given contract (<typeparamref name="TContract"/>).
         /// </summary>
         /// <typeparam name="TContract">Type of contract.</typeparam>
         /// <param name="a_func">Service function.</param>
         public void Register<TContract>(Func<TContract> a_func)
+        {
+            var typeId = CreateTypeId<TContract>();
+
+            _typesByGuid[typeId] = new FuncService<TContract>(a_func);
+        }
+
+        /// <summary>
+        /// Register the given service function (<paramref name="a_func"/>) as the given contract (<typeparamref name="TContract"/>).
+        /// </summary>
+        /// <typeparam name="TContract">Type of contract.</typeparam>
+        /// <param name="a_func">Service function.</param>
+        /// <param name="a_name">Service name.</param>
+        public void Register<TContract>(Func<TContract> a_func, String a_name)
         {
             var typeId = CreateTypeId<TContract>();
 
