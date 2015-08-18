@@ -6,7 +6,6 @@
     <title>SimpleIoc</title>
     <authors>JSMunroe.com, Jordan Munroe</authors>
     <owners>Jordan Munroe</owners>
-    <licenseUrl></licenseUrl>
     <projectUrl>https://github.com/jsmunroe/SimpleIoc</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Simple to use universal inversion of control container.</description>
