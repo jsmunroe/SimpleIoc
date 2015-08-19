@@ -13,7 +13,7 @@ namespace SimpleIoc.Test.Factories
         {
             // Setup
             var container = new Container();
-            var service = new Service(container, typeof(ServiceWithDefaultConstructor));
+            var service = new Service(container, typeof(ServiceWithDefaultConstructor), typeof(ServiceBase));
             var type = typeof(ServiceWithDefaultConstructor);
             var constructor = type.GetConstructors().First();
 
@@ -27,7 +27,7 @@ namespace SimpleIoc.Test.Factories
         {
             // Setup
             var container = new Container();
-            var service = new Service(container, typeof(ServiceWithDefaultConstructor));
+            var service = new Service(container, typeof(ServiceWithDefaultConstructor), typeof(ServiceBase));
             var type = typeof(ServiceWithDefaultConstructor);
             var constructor = type.GetConstructors().First();
 
@@ -41,7 +41,7 @@ namespace SimpleIoc.Test.Factories
         {
             // Setup
             var container = new Container();
-            var service = new Service(container, typeof(ServiceWithDefaultConstructor));
+            var service = new Service(container, typeof(ServiceWithDefaultConstructor), typeof(ServiceBase));
             var type = typeof(ServiceWithDefaultConstructor);
             var constructor = type.GetConstructors().First();
 
@@ -54,7 +54,7 @@ namespace SimpleIoc.Test.Factories
         {
             // Setup
             var container = new Container();
-            var service = new Service(container, typeof(ServiceWithDefaultConstructor));
+            var service = new Service(container, typeof(ServiceWithDefaultConstructor), typeof(ServiceBase));
             var type = typeof(ServiceWithDefaultConstructor);
             var constructor = type.GetConstructors().First();
             var factory = new ActivateFactory(a_service: service, a_constructor: constructor);
@@ -73,7 +73,7 @@ namespace SimpleIoc.Test.Factories
         {
             // Setup
             var container = new Container();
-            var service = new Service(container, typeof(ServiceWithOneConstructor));
+            var service = new Service(container, typeof(ServiceWithOneConstructor), typeof(ServiceBase));
             var type = typeof(ServiceWithOneConstructor);
             var constructor = type.GetConstructors().First();
             var factory = new ActivateFactory(a_service: service, a_constructor: constructor);
@@ -88,7 +88,7 @@ namespace SimpleIoc.Test.Factories
             // Setup
             var container = new Container();
             container.Register<DependencyBase, Dependency1>();
-            var service = new Service(container, typeof(ServiceWithOneConstructor));
+            var service = new Service(container, typeof(ServiceWithOneConstructor), typeof(ServiceBase));
             var type = typeof(ServiceWithOneConstructor);
             var constructor = type.GetConstructors().First();
             var factory = new ActivateFactory(a_service: service, a_constructor: constructor);

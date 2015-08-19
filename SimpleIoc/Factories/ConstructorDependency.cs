@@ -11,7 +11,7 @@ namespace SimpleIoc.Factories
         /// <param name="a_paramName">Parameter name.</param>
         /// <exception cref="ArgumentNullException">Thrown if "<paramref name="a_contract"/>" is null.</exception>
         /// <exception cref="ArgumentNullException">Thrown if "<paramref name="a_paramName"/>" is null.</exception>
-        public ConstructorDependency(Type a_contract, String a_paramName) 
+        public ConstructorDependency(Type a_contract, string a_paramName) 
             : base(a_contract)
         {
             #region Argument Validation

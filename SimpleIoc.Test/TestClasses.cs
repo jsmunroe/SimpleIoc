@@ -34,7 +34,7 @@ namespace SimpleIoc.Test
 
     public class ServiceWithMultipleConstructors : ServiceBase
     {
-        public String Constructor { get; }
+        public string Constructor { get; }
 
         public ServiceWithMultipleConstructors(DependencyBase a_dependency1)
         {

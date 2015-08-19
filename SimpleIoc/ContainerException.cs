@@ -12,7 +12,7 @@ namespace SimpleIoc
         /// Constructor.
         /// </summary>
         /// <param name="a_message">Exception message.</param>
-        public ContainerException(String a_message)
+        public ContainerException(string a_message)
             : base(a_message)
         {
 
@@ -23,7 +23,7 @@ namespace SimpleIoc
         /// </summary>
         /// <param name="a_message">Exception message.</param>
         /// <param name="a_innerException">Inner exception.</param>
-        public ContainerException(String a_message, Exception a_innerException)
+        public ContainerException(string a_message, Exception a_innerException)
             : base(a_message, a_innerException)
         {
 

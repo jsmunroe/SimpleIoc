@@ -17,9 +17,12 @@ namespace SimpleIoc
         /// </summary>
         /// <param name="a_container">Container that owns this service.</param>
         /// <param name="a_type">Contract of service.</param>
+        /// <param name="a_contract">Contract of this service.</param>
+        /// <param name="a_name">Name of this service.</param>
         /// <exception cref="ArgumentNullException">Thrown if "<paramref name="a_type"/>" is null.</exception>
         /// <exception cref="ArgumentNullException">Thrown if "<paramref name="a_container"/>" is null.</exception>
-        public Service(Container a_container, Type a_type)
+        /// <exception cref="ArgumentNullException">Thrown if "<paramref name="a_name"/>" is null.</exception>
+        public Service(Container a_container, Type a_type, Type a_contract, string a_name = null)
         {
             #region Argument Validation
 
@@ -29,18 +32,34 @@ namespace SimpleIoc
             if (a_type == null)
                 throw new ArgumentNullException(nameof(a_type));
 
+            if (a_contract == null)
+                throw new ArgumentNullException(nameof(a_contract));
+
             #endregion
 
             _container = a_container;
+            Contract = a_contract;
             Type = a_type;
+            Name = a_name;
 
             Factories = DiscoverFactories();
         }
 
         /// <summary>
-        /// Contract of this service.
+        /// Type of this service.
         /// </summary>
         public Type Type { get; }
+
+        /// <summary>
+        /// Constract type of this service.
+        /// </summary>
+        public Type Contract { get; }
+
+        /// <summary>
+        /// Name of this service.
+        /// </summary>
+        public string Name { get; }
+
 
         /// <summary>
         /// Factories available to create this service.

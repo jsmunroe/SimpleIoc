@@ -10,7 +10,7 @@ namespace SimpleIoc
 {
     public class Container
     {
-        private readonly Dictionary<String, IService> _typesByGuid = new Dictionary<String, IService>();
+        private readonly List<IService> _services = new List<IService>();
 
         /// <summary>
         /// Register the given service (<typeparamref name="TService"/>) as the given contract (<typeparamref name="TContract"/>).
@@ -20,9 +20,11 @@ namespace SimpleIoc
         public void Register<TContract, TService>()
             where TService : TContract
         {
-            var typeId = CreateTypeId<TContract>();
+            if (_services.Any(i => i.Contract == typeof(TContract)))
+                throw new ContainerException($"Service is already registered with contract type '{typeof(TContract).Name}'.");
 
-            _typesByGuid[typeId] = new Service(this, typeof(TService));
+            var newService = new Service(this, typeof(TService), typeof(TContract));
+            _services.Add(newService);
         }
 
         /// <summary>
@@ -40,12 +42,17 @@ namespace SimpleIoc
         /// <param name="a_name">Service name.</param>
         /// <typeparam name="TContract">Type of contract.</typeparam>
         /// <typeparam name="TService">Type of service.</typeparam>
-        public void Register<TContract, TService>(String a_name)
+        public void Register<TContract, TService>(string a_name)
             where TService : TContract
         {
-            var typeId = CreateTypeId<TContract>(a_name);
+            if (_services.Any(i => i.Contract == typeof(TContract) && i.Name == null))
+                throw new ContainerException($"Service is already registered with contract type '{typeof(TContract).Name}' and without a name.");
 
-            _typesByGuid[typeId] = new Service(this, typeof(TService));
+            if (_services.Any(i => i.Contract == typeof(TContract) && i.Name == a_name))
+                throw new ContainerException($"Service is already registered with contract type '{typeof(TContract).Name}' and with the name '{a_name}'.");
+
+            var newService = new Service(this, typeof(TService), typeof(TContract), a_name);
+            _services.Add(newService);
         }
 
         /// <summary>
@@ -53,7 +60,7 @@ namespace SimpleIoc
         /// </summary>
         /// <typeparam name="TService">Service type.</typeparam>
         /// <param name="a_name">Service name.</param>
-        public void Register<TService>(String a_name)
+        public void Register<TService>(string a_name)
         {
             Register<TService, TService>(a_name);
         }
@@ -65,9 +72,11 @@ namespace SimpleIoc
         /// <param name="a_func">Service function.</param>
         public void Register<TContract>(Func<TContract> a_func)
         {
-            var typeId = CreateTypeId<TContract>();
+            if (_services.Any(i => i.Contract == typeof(TContract)))
+                throw new ContainerException($"Service is already registered with contract type '{typeof(TContract).Name}'.");
 
-            _typesByGuid[typeId] = new FuncService<TContract>(a_func);
+            var newService = new FuncService<TContract>(a_func);
+            _services.Add(newService);
         }
 
         /// <summary>
@@ -76,15 +85,20 @@ namespace SimpleIoc
         /// <typeparam name="TContract">Type of contract.</typeparam>
         /// <param name="a_func">Service function.</param>
         /// <param name="a_name">Service name.</param>
-        public void Register<TContract>(Func<TContract> a_func, String a_name)
+        public void Register<TContract>(Func<TContract> a_func, string a_name)
         {
-            var typeId = CreateTypeId<TContract>();
+            if (_services.Any(i => i.Contract == typeof(TContract) && i.Name == null))
+                throw new ContainerException($"Service is already registered with contract type '{typeof(TContract).Name}' and without a name.");
 
-            _typesByGuid[typeId] = new FuncService<TContract>(a_func);
+            if (_services.Any(i => i.Contract == typeof(TContract) && i.Name == a_name))
+                throw new ContainerException($"Service is already registered with contract type '{typeof(TContract).Name}' and with the name '{a_name}'.");
+
+            var newService = new FuncService<TContract>(a_func, a_name);
+            _services.Add(newService);
         }
 
         /// <summary>
-        /// Resolve the service registered with the given contract type (<typeparamref name="TContract"/>)
+        /// Resolve the service registered with the given contract type (<typeparamref name="TContract"/>).
         /// </summary>
         /// <typeparam name="TContract">Type of contract.</typeparam>
         /// <returns>Resolved serivce instance.</returns>
@@ -94,24 +108,43 @@ namespace SimpleIoc
         }
 
         /// <summary>
-        /// Resolve the service registered with the given contract type (<typeparamref name="TContract"/>)
+        /// Resolve the service registered with the given contract type (<typeparamref name="TContract"/>).
         /// </summary>
         /// <param name="a_name">Service name.</param>
         /// <typeparam name="TContract">Type of contract.</typeparam>
         /// <returns>Resolved service instance.</returns>
-        public TContract Resolve<TContract>(String a_name)
+        public TContract Resolve<TContract>(string a_name)
         {
             return (TContract)BuildServiceForContract(typeof(TContract), a_name);
         }
 
         /// <summary>
-        /// Resolve the service registered with the given contract type (<paramref name="a_type"/>)
+        /// Resolve the service registered with the given contract type (<paramref name="a_type"/>).
         /// </summary>
         /// <param name="a_type">Type of contract.</param>
         /// <returns>Resolved service instance.</returns>
         public object Resolve(Type a_type)
         {
             return BuildServiceForContract(a_type);
+        }
+
+        /// <summary>
+        /// Resolve all services registerd with the given contract type (<typeparamref name="TContract"/>).
+        /// </summary>
+        /// <typeparam name="TContract">Contract type.</typeparam>
+        /// <returns>All service instances of the contract type.</returns>
+        public IEnumerable<TContract> ResolveAll<TContract>()
+        {
+            return _services.Where(i => i.Contract == typeof(TContract)).Select(BuildService).OfType<TContract>();
+        }
+
+        /// <summary>
+        /// Resolve all services registerd with the given contract type (<typeparamref name="TContract"/>).
+        /// </summary>
+        /// <returns>All service instances of the contract type.</returns>
+        public IEnumerable<object> ResolveAll(Type a_type)
+        {
+            return _services.Where(i => i.Contract == a_type).Select(BuildService); 
         }
 
         /// <summary>
@@ -122,12 +155,8 @@ namespace SimpleIoc
         /// <returns>Resolved service.</returns>
         internal IService ResolveService(Type a_type)
         {
-            var typeId = CreateTypeId(a_type);
-
-            if (!_typesByGuid.ContainsKey(typeId))
-                return null;
-
-            return _typesByGuid[typeId];
+            var existing = _services.FirstOrDefault(i => i.Contract == a_type);
+            return existing;
         }
 
         /// <summary>
@@ -136,7 +165,7 @@ namespace SimpleIoc
         /// <param name="a_type">Type of contract.</param>
         /// <param name="a_name">Service name.</param>
         /// <returns>True if contract type was resolved.</returns>
-        public object Resolve(Type a_type, String a_name)
+        public object Resolve(Type a_type, string a_name)
         {
             return BuildServiceForContract(a_type, a_name);
         }
@@ -147,52 +176,31 @@ namespace SimpleIoc
         /// <param name="a_type">Contract type.</param>
         /// <param name="a_name">Service name.</param>
         /// <returns>Built service.</returns>
-        private object BuildServiceForContract(Type a_type, String a_name = null)
+        private object BuildServiceForContract(Type a_type, string a_name = null)
         {
-            var typeId = CreateTypeId(a_type, a_name);
+            var service = _services.FirstOrDefault(i => i.Contract == a_type && i.Name == a_name);
 
-            // TODO: Enable building of contract itself if possible.
+            if (service == null)
+                throw new ContainerException($"No service is registered with contract type '{a_type.Name}' and with the name '{a_name}'.");
 
-            if (!_typesByGuid.ContainsKey(typeId))
-                throw new ContainerException($"Service has not been registered for contract '{a_type.Name}'.");
+            return BuildService(service);
+        }
 
-            var service = _typesByGuid[typeId];
-            
+        /// <summary>
+        /// Build the given service (<paramref name="a_service"/>).
+        /// </summary>
+        /// <param name="a_service">Service to build.</param>
+        /// <returns>Built service.</returns>
+        private static object BuildService(IService a_service)
+        {
             try
             {
-                return service.Resolve();
+                return a_service.Resolve();
             }
             catch (InvalidOperationException ex)
             {
-                throw new ContainerException($"Could not build the service of type '{service.Type.Name}' for contract '{a_type.Name}'.", ex);
+                throw new ContainerException($"Could not build the service of type '{a_service.Type.Name}' for contract '{a_service.Contract.Name}'.", ex);
             }
         }
-
-        /// <summary>
-        /// Create a type identifier for the given contract (<typeparamref name="TContract"/>).
-        /// </summary>
-        /// <typeparam name="TContract">Type of contract.</typeparam>
-        /// <param name="a_name">Service name.</param>
-        /// <returns>Created type identifier.</returns>
-        private string CreateTypeId<TContract>(String a_name = null)
-        {
-            return CreateTypeId(typeof(TContract), a_name);
-        }
-
-        /// <summary>
-        /// Create a type identifier for the given contract (<paramref name="a_type"/>).
-        /// </summary>
-        /// <param name="a_type">Contract type.</param>
-        /// <returns>Created type identifier.</returns>
-        private string CreateTypeId(Type a_type, String a_name = null)
-        {
-            var typeId = a_type.FullName + a_type.GUID.ToString();
-
-            if (!String.IsNullOrWhiteSpace(a_name))
-                typeId += "+" + a_name;
-
-            return typeId;
-        }
-
     }
 }

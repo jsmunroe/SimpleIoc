@@ -1,5 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SimpleIoc.Test
 {
@@ -39,6 +41,21 @@ namespace SimpleIoc.Test
         }
 
         [TestMethod]
+        public void ResolveServiceWithTypeObject()
+        {
+            // Setup
+            var container = new Container();
+            container.Register<ServiceBase, ServiceWithNoConstructors>();
+
+            // Execute
+            var service = container.Resolve(typeof(ServiceBase));
+
+            // Assert
+            Assert.IsNotNull(service);
+            Assert.IsTrue(service is ServiceWithNoConstructors);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ContainerException))]
         public void ResolveUnregisteredService()
         {
@@ -58,6 +75,21 @@ namespace SimpleIoc.Test
 
             // Execute
             var service = container.Resolve<ServiceBase>("MyService");
+
+            // Assert
+            Assert.IsNotNull(service);
+            Assert.IsTrue(service is ServiceWithNoConstructors);
+        }
+
+        [TestMethod]
+        public void ResolveServiceWithNameAndTypeObject()
+        {
+            // Setup
+            var container = new Container();
+            container.Register<ServiceBase, ServiceWithNoConstructors>("MyService");
+
+            // Execute
+            var service = container.Resolve(typeof(ServiceBase), "MyService");
 
             // Assert
             Assert.IsNotNull(service);
@@ -132,6 +164,102 @@ namespace SimpleIoc.Test
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(ServiceWithNoConstructors));
         }
+
+        [TestMethod]
+        public void RegisterTheSameContractMoreThanOnceWithDifferentNames()
+        {
+            // Setup
+            var container = new Container();
+
+            // Execute
+            container.Register<DependencyBase, Dependency1>("Dependency1");
+            container.Register<DependencyBase, Dependency2>("Dependency2");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ContainerException))]
+        public void RegisterTheSameContractWithNoNames()
+        {
+            // Setup
+            var container = new Container();
+
+            // Execute
+            container.Register<DependencyBase, Dependency1>();
+            container.Register<DependencyBase, Dependency2>();
+        }
+
+
+        [TestMethod]
+        [ExpectedException(typeof(ContainerException))]
+        public void RegisterTheSameContractWithSameName()
+        {
+            // Setup
+            var container = new Container();
+
+            // Execute
+            container.Register<DependencyBase, Dependency1>("Dependency1");
+            container.Register<DependencyBase, Dependency2>("Dependency1");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ContainerException))]
+        public void RegisterTheSameContractWithOnlyFirstNamed()
+        {
+            // Setup
+            var container = new Container();
+
+            // Execute
+            container.Register<DependencyBase, Dependency1>("Dependency1");
+            container.Register<DependencyBase, Dependency2>();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ContainerException))]
+        public void RegisterTheSameContractWithOnlySecondNamed()
+        {
+            // Setup
+            var container = new Container();
+
+            // Execute
+            container.Register<DependencyBase, Dependency1>();
+            container.Register<DependencyBase, Dependency2>("Dependency2");
+        }
+
+        [TestMethod]
+        public void ResolveMultipleServices()
+        {
+            // Setup
+            var container = new Container();
+            container.Register<DependencyBase, Dependency1>("Dependency1");
+            container.Register<DependencyBase, Dependency2>("Dependency2");
+
+            // Execute
+            var services = container.ResolveAll<DependencyBase>();
+
+            // Assert
+            Assert.AreEqual(2, services.Count());
+            Assert.AreEqual(1, services.OfType<Dependency1>().Count());
+            Assert.AreEqual(1, services.OfType<Dependency2>().Count());
+        }
+
+        [TestMethod]
+        public void ResolveMultipleServicesWithTypeObject()
+        {
+            // Setup
+            var container = new Container();
+            container.Register<DependencyBase, Dependency1>("Dependency1");
+            container.Register<DependencyBase, Dependency2>("Dependency2");
+
+            // Execute
+            var services = container.ResolveAll(typeof(DependencyBase));
+
+            // Assert
+            Assert.AreEqual(2, services.Count());
+            Assert.AreEqual(1, services.OfType<Dependency1>().Count());
+            Assert.AreEqual(1, services.OfType<Dependency2>().Count());
+        }
+
+
     }
 
 

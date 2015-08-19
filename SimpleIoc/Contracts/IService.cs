@@ -10,6 +10,16 @@ namespace SimpleIoc.Contracts
         Type Type { get; }
 
         /// <summary>
+        /// Constract type of this service.
+        /// </summary>
+        Type Contract { get; }
+
+        /// <summary>
+        /// Name of the service.
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
         /// Factories available to create this service.
         /// </summary>
         IServiceFactory[] Factories { get; }

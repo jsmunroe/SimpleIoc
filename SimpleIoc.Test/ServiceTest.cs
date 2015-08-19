@@ -11,10 +11,21 @@ namespace SimpleIoc.Test
         {
             // Execute
             var container = new Container();
-            var service = new Service(container, typeof(String));
-            
+            var service = new Service(container, typeof(string), typeof(string), "service name");
+
             // Assert
-            Assert.AreSame(typeof (String), service.Type);
+            Assert.AreSame(typeof(string), service.Type);
+            Assert.AreSame(typeof(string), service.Contract);
+            Assert.AreSame("service name", service.Name);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ConstructServiceWithNullContractType()
+        {
+            // Execute
+            var container = new Container();
+            new Service(a_container: container, a_type: typeof(string), a_contract: null);
         }
 
         [TestMethod]
@@ -23,7 +34,7 @@ namespace SimpleIoc.Test
         {
             // Execute
             var container = new Container();
-            new Service(a_container: container, a_type: null);
+            new Service(a_container: container, a_type: null, a_contract: null);
         }
 
         [TestMethod]
@@ -31,7 +42,7 @@ namespace SimpleIoc.Test
         public void ConstructServiceWithNullContainer()
         {
             // Execute
-            new Service(a_container: null, a_type: typeof(String));
+            new Service(a_container: null, a_type: typeof(string), a_contract: typeof(string));
         }
 
         [TestMethod]
@@ -39,7 +50,7 @@ namespace SimpleIoc.Test
         {
             // Setup
             var container = new Container();
-            var service = new Service(container, typeof(ServiceWithNoConstructors));
+            var service = new Service(container, typeof(ServiceWithNoConstructors), typeof(ServiceBase));
 
             // Execute
             var factories = service.Factories;
@@ -54,7 +65,7 @@ namespace SimpleIoc.Test
         {
             // Setup
             var container = new Container();
-            var service = new Service(container, typeof(ServiceWithDefaultConstructor));
+            var service = new Service(container, typeof(ServiceWithDefaultConstructor), typeof(ServiceBase));
 
             // Execute
             var factories = service.Factories;
@@ -69,7 +80,7 @@ namespace SimpleIoc.Test
         {
             // Setup
             var container = new Container();
-            var service = new Service(container, typeof(ServiceWithOneConstructor));
+            var service = new Service(container, typeof(ServiceWithOneConstructor), typeof(ServiceBase));
 
             // Execute
             var factories = service.Factories;
@@ -84,7 +95,7 @@ namespace SimpleIoc.Test
         {
             // Setup
             var container = new Container();
-            var service = new Service(container, typeof(ServiceWithMultipleConstructors));
+            var service = new Service(container, typeof(ServiceWithMultipleConstructors), typeof(ServiceBase));
 
             // Execute
             var factories = service.Factories;
@@ -99,7 +110,7 @@ namespace SimpleIoc.Test
         {
             // Setup
             var container = new Container();
-            var service = new Service(container, typeof(ServiceWithNoConstructors));
+            var service = new Service(container, typeof(ServiceWithNoConstructors), typeof(ServiceBase));
 
             // Execute
             var serviceInstance = service.Resolve();
@@ -114,7 +125,7 @@ namespace SimpleIoc.Test
         {
             // Setup
             var container = new Container();
-            var service = new Service(container, typeof(ServiceWithDefaultConstructor));
+            var service = new Service(container, typeof(ServiceWithDefaultConstructor), typeof(ServiceBase));
 
             // Execute
             var serviceInstance = service.Resolve();
@@ -130,7 +141,7 @@ namespace SimpleIoc.Test
         {
             // Setup
             var container = new Container();
-            var service = new Service(container, typeof(ServiceWithOneConstructor));
+            var service = new Service(container, typeof(ServiceWithOneConstructor), typeof(ServiceBase));
             
             // Execute
             var serviceInstance = service.Resolve();
@@ -146,7 +157,7 @@ namespace SimpleIoc.Test
             // Setup
             var container = new Container();
             container.Register<DependencyBase, Dependency1>();
-            var service = new Service(container, typeof(ServiceWithOneConstructor));
+            var service = new Service(container, typeof(ServiceWithOneConstructor), typeof(ServiceBase));
 
             // Execute
             var serviceInstance = service.Resolve();
@@ -158,7 +169,7 @@ namespace SimpleIoc.Test
             // Setup
             var container = new Container();
             container.Register<DependencyBase, Dependency1>();
-            var service = new Service(container, typeof(ServiceWithMultipleConstructors));
+            var service = new Service(container, typeof(ServiceWithMultipleConstructors), typeof(ServiceBase));
 
             // Execute
             var serviceInstance = service.Resolve();
@@ -177,7 +188,7 @@ namespace SimpleIoc.Test
             var container = new Container();
             container.Register<DependencyBase, Dependency1>();
             container.Register<Dependency2, Dependency2>();
-            var service = new Service(container, typeof(ServiceWithMultipleConstructors));
+            var service = new Service(container, typeof(ServiceWithMultipleConstructors), typeof(ServiceBase));
 
             // Execute
             var serviceInstance = service.Resolve();
@@ -195,7 +206,7 @@ namespace SimpleIoc.Test
             // Setup
             var container = new Container();
             container.Register<DependencyBase, Dependency1>();
-            var service = new Service(container, typeof(ServiceWithRequiredProperty));
+            var service = new Service(container, typeof(ServiceWithRequiredProperty), typeof(ServiceBase));
 
             // Execute 
             var serviceInstance = service.Resolve();
