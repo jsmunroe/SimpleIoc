@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>SimpleIoc</id>
+    <id>JSMunroe.SimpleIoc</id>
     <version>$version$</version>
     <title>SimpleIoc</title>
     <authors>JSMunroe.com, Jordan Munroe</authors>
