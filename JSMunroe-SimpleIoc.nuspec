@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>JSMunroe.SimpleIoc</id>
+    <id>JSMunroe-SimpleIoc</id>
     <version>$version$</version>
     <title>SimpleIoc</title>
     <authors>JSMunroe.com, Jordan Munroe</authors>
@@ -14,6 +14,6 @@
     <tags>IOC Container Inversion SimpleIOC</tags>
   </metadata>
   <files>
-	<file src="SimpleIoc.nuspec\bin\$configuration$\SimpleIoc.nuspec.dll" target="lib" />
+	<file src="SimpleIoc\bin\$configuration$\SimpleIoc.dll" target="lib" />
   </files>
 </package>
