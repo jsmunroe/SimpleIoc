@@ -60,7 +60,6 @@ namespace SimpleIoc
         /// </summary>
         public string Name { get; }
 
-
         /// <summary>
         /// Factories available to create this service.
         /// </summary>

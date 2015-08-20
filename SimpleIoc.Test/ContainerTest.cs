@@ -259,6 +259,21 @@ namespace SimpleIoc.Test
             Assert.AreEqual(1, services.OfType<Dependency2>().Count());
         }
 
+        [TestMethod]
+        public void ResolveAnUnregisteredService()
+        {
+            // Setup
+            var container = new Container();
+            container.Register<DependencyBase, Dependency1>();
+
+            // Execute
+            var service = container.Resolve<ServiceWithOneConstructor>();
+
+            // Assert
+            Assert.IsNotNull(service);
+            Assert.IsTrue(service is ServiceWithOneConstructor);
+        }
+
 
     }
 

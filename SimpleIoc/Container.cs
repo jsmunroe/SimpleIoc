@@ -171,17 +171,29 @@ namespace SimpleIoc
         }
 
         /// <summary>
-        /// Build the service for the given contract type (<paramref name="a_type"/>) with the given name (<paramref name="a_name"/>).
+        /// Build the service for the given contract type (<paramref name="a_contract"/>) with the given name (<paramref name="a_name"/>).
         /// </summary>
-        /// <param name="a_type">Contract type.</param>
+        /// <param name="a_contract">Contract type.</param>
         /// <param name="a_name">Service name.</param>
-        /// <returns>Built service.</returns>
-        private object BuildServiceForContract(Type a_type, string a_name = null)
+        /// <returns>Built service instance.</returns>
+        private object BuildServiceForContract(Type a_contract, string a_name = null)
         {
-            var service = _services.FirstOrDefault(i => i.Contract == a_type && i.Name == a_name);
+            var service = _services.FirstOrDefault(i => i.Contract == a_contract && i.Name == a_name);
 
             if (service == null)
-                throw new ContainerException($"No service is registered with contract type '{a_type.Name}' and with the name '{a_name}'.");
+                return BuildContract(a_contract);
+
+            return BuildService(service);
+        }
+
+        /// <summary>
+        /// Attempt to build the given contract type (<paramref name="a_contract"/>) itself. 
+        /// </summary>
+        /// <param name="a_contract">Contract type.</param>
+        /// <returns>Built service instance.</returns>
+        private object BuildContract(Type a_contract)
+        {
+            var service = new Service(this, a_contract, a_contract);
 
             return BuildService(service);
         }
