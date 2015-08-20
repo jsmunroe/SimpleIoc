@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contracts\IBootstrappable.cs" />
     <Compile Include="Factories\ConstructorDependency.cs" />
     <Compile Include="Factories\PropertyDependency.cs" />
     <Compile Include="Factories\ActivateFactory.cs" />

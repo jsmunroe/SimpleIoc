@@ -1,11 +1,7 @@
 namespace SimpleIoc.Contracts
 {
-    public interface IModule
+    public interface IModule : IBootstrappable
     {
-        /// <summary>
-        /// Bootstrap this module.
-        /// </summary>
-        /// <param name="a_container">Container into which to </param>
-        void Bootstrap(Container a_container);
+
     }
 }
