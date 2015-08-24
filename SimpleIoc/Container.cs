@@ -139,8 +139,9 @@ namespace SimpleIoc
         }
 
         /// <summary>
-        /// Resolve all services registerd with the given contract type (<typeparamref name="TContract"/>).
+        /// Resolve all services registerd with the given contract type (<paramref name="a_type"/>).
         /// </summary>
+        /// <param name="a_type">Contarct type.</param>
         /// <returns>All service instances of the contract type.</returns>
         public IEnumerable<object> ResolveAll(Type a_type)
         {
