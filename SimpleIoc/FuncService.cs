@@ -17,6 +17,7 @@ namespace SimpleIoc
         {
             _func = a_func;
             Type = typeof (TContract);
+            Name = a_name;
             Contract = typeof(TContract);
             Factories = new IServiceFactory[] {new FuncFactory<TContract>(a_func) };
         }

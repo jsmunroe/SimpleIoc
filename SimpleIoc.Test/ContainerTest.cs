@@ -97,6 +97,21 @@ namespace SimpleIoc.Test
         }
 
         [TestMethod]
+        public void ResolveFuncServiceWithName()
+        {
+            // Setup
+            var container = new Container();
+            container.Register<ServiceBase>(() => new ServiceWithDefaultConstructor(), "MyService");
+
+            // Execute
+            var service = container.Resolve(typeof(ServiceBase), "MyService");
+
+            // Assert
+            Assert.IsNotNull(service);
+            Assert.IsTrue(service is ServiceWithNoConstructors);
+        }
+
+        [TestMethod]
         public void ResolveServiceWithDependency()
         {
             // Setup
