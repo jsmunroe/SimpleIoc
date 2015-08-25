@@ -10,7 +10,7 @@ namespace SimpleIoc
 {
     public class Container
     {
-        private readonly List<IService> _services = new List<IService>();
+        private readonly ServiceContractListing _services = new ServiceContractListing();
 
         /// <summary>
         /// Register the given service (<typeparamref name="TService"/>) as the given contract (<typeparamref name="TContract"/>).
@@ -20,7 +20,7 @@ namespace SimpleIoc
         public void Register<TContract, TService>()
             where TService : TContract
         {
-            if (_services.Any(i => i.Contract == typeof(TContract)))
+            if (_services.GetServices(typeof(TContract)).Any())
                 throw new ContainerException($"Service is already registered with contract type '{typeof(TContract).Name}'.");
 
             var newService = new Service(this, typeof(TService), typeof(TContract));
@@ -45,10 +45,10 @@ namespace SimpleIoc
         public void Register<TContract, TService>(string a_name)
             where TService : TContract
         {
-            if (_services.Any(i => i.Contract == typeof(TContract) && i.Name == null))
+            if (_services.GetServices(typeof(TContract)).Any(i => i.Name == null))
                 throw new ContainerException($"Service is already registered with contract type '{typeof(TContract).Name}' and without a name.");
 
-            if (_services.Any(i => i.Contract == typeof(TContract) && i.Name == a_name))
+            if (_services.GetService(typeof(TContract), a_name) != null)
                 throw new ContainerException($"Service is already registered with contract type '{typeof(TContract).Name}' and with the name '{a_name}'.");
 
             var newService = new Service(this, typeof(TService), typeof(TContract), a_name);
@@ -72,7 +72,7 @@ namespace SimpleIoc
         /// <param name="a_func">Service function.</param>
         public void Register<TContract>(Func<TContract> a_func)
         {
-            if (_services.Any(i => i.Contract == typeof(TContract)))
+            if (_services.GetServices(typeof(TContract)).Any())
                 throw new ContainerException($"Service is already registered with contract type '{typeof(TContract).Name}'.");
 
             var newService = new FuncService<TContract>(a_func);
@@ -87,10 +87,10 @@ namespace SimpleIoc
         /// <param name="a_name">Service name.</param>
         public void Register<TContract>(Func<TContract> a_func, string a_name)
         {
-            if (_services.Any(i => i.Contract == typeof(TContract) && i.Name == null))
+            if (_services.GetServices(typeof(TContract)).Any(i => i.Name == null))
                 throw new ContainerException($"Service is already registered with contract type '{typeof(TContract).Name}' and without a name.");
 
-            if (_services.Any(i => i.Contract == typeof(TContract) && i.Name == a_name))
+            if (_services.GetService(typeof(TContract), a_name) != null)
                 throw new ContainerException($"Service is already registered with contract type '{typeof(TContract).Name}' and with the name '{a_name}'.");
 
             var newService = new FuncService<TContract>(a_func, a_name);
@@ -135,7 +135,7 @@ namespace SimpleIoc
         /// <returns>All service instances of the contract type.</returns>
         public IEnumerable<TContract> ResolveAll<TContract>()
         {
-            return _services.Where(i => i.Contract == typeof(TContract)).Select(BuildService).OfType<TContract>();
+            return _services.GetServices(typeof(TContract)).Select(BuildService).OfType<TContract>();
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace SimpleIoc
         /// <returns>All service instances of the contract type.</returns>
         public IEnumerable<object> ResolveAll(Type a_type)
         {
-            return _services.Where(i => i.Contract == a_type).Select(BuildService); 
+            return _services.GetServices(a_type).Select(BuildService);
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace SimpleIoc
         /// <returns>Resolved service.</returns>
         internal IService ResolveService(Type a_type)
         {
-            var existing = _services.FirstOrDefault(i => i.Contract == a_type);
+            var existing = _services.GetServices(a_type).FirstOrDefault();
             return existing;
         }
 
@@ -179,7 +179,19 @@ namespace SimpleIoc
         /// <returns>Built service instance.</returns>
         private object BuildServiceForContract(Type a_contract, string a_name = null)
         {
-            var service = _services.FirstOrDefault(i => i.Contract == a_contract && i.Name == a_name);
+            IService service;
+            if (a_name == null)
+            {
+                var services = _services.GetServices(a_contract);
+                if (services.Take(2).Count() > 1)
+                    throw new ContainerException($"Cannot build single service for contract type '{a_contract.FullName}'. Multiple services are registered with that contract type.");
+
+                service = services.SingleOrDefault();
+            }
+            else
+            {
+                service = _services.GetService(a_contract, a_name);
+            }
 
             if (service == null)
                 return BuildContract(a_contract);

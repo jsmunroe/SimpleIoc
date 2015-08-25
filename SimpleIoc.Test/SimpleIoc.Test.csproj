@@ -65,6 +65,7 @@
     <Compile Include="Factories\DependencyTest.cs" />
     <Compile Include="FuncServiceTest.cs" />
     <Compile Include="Factories\FuncFactoryTest.cs" />
+    <Compile Include="ServiceContractListingTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SimpleIoc\SimpleIoc.csproj">
