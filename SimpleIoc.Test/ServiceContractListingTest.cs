@@ -143,6 +143,45 @@ namespace SimpleIoc.Test
             // Execute
             var result = listing.GetService(contractType, a_name:null);
         }
+
+        [TestMethod]
+        public void CreateChild()
+        {
+            // Setup
+            var listing = new ServiceContractListing();
+            var contractType = typeof(ServiceBase);
+            var service = new TestService { Contract = contractType, Name = "Service1" };
+            listing.Add(service);
+
+            // Execute
+            var child = listing.CreateChild();
+            var result = child.GetService(contractType, "Service1");
+
+            // Assert
+            Assert.IsNotNull(child);
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Service1", service.Name);
+        }
+
+        [TestMethod]
+        public void CreateChildAndAddAServiceToTheParent()
+        {
+            // Setup
+            var listing = new ServiceContractListing();
+
+            // Execute
+            var child = listing.CreateChild();
+            var contractType = typeof(ServiceBase);
+            var service = new TestService { Contract = contractType, Name = "Service1" };
+            listing.Add(service);
+
+            var result = child.GetService(contractType, "Service1");
+
+            // Assert
+            Assert.IsNotNull(child);
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Service1", service.Name);
+        }
     }
 
     public class TestService : IService

@@ -13,6 +13,31 @@ namespace SimpleIoc
         private readonly ServiceContractListing _services = new ServiceContractListing();
 
         /// <summary>
+        /// Constructor.
+        /// </summary>
+        public Container()
+        {
+            
+        }
+
+        /// <summary>
+        /// Private Constructor.
+        /// </summary>
+        /// <param name="a_services">Service listing.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="a_services"/> is null.</exception>
+        private Container(ServiceContractListing a_services)
+        {
+            #region Argument Validation
+
+            if (a_services == null)
+                throw new ArgumentNullException(nameof(a_services));
+
+            #endregion
+
+            _services = a_services;
+        }
+
+        /// <summary>
         /// Register the given service (<typeparamref name="TService"/>) as the given contract (<typeparamref name="TContract"/>).
         /// </summary>
         /// <typeparam name="TContract">Type of contract.</typeparam>
@@ -172,6 +197,18 @@ namespace SimpleIoc
         }
 
         /// <summary>
+        /// Create a child of this container.
+        /// </summary>
+        /// <returns>Created child container.</returns>
+        public Container CreateChild()
+        {
+            var listing = _services.CreateChild();
+            var child = new Container(listing);
+
+            return child;
+        }
+
+        /// <summary>
         /// Build the service for the given contract type (<paramref name="a_contract"/>) with the given name (<paramref name="a_name"/>).
         /// </summary>
         /// <param name="a_contract">Contract type.</param>
@@ -227,5 +264,6 @@ namespace SimpleIoc
                 throw new ContainerException($"Could not build the service of type '{a_service.Type.Name}' for contract '{a_service.Contract.Name}'.", ex);
             }
         }
+
     }
 }
