@@ -10,8 +10,27 @@ namespace SimpleIoc
 {
     public class ServiceContractListing
     {
+        private readonly ServiceContractListing _parent = null;
+
         private readonly Dictionary<string, IService> _servicesByName = new Dictionary<string, IService>();
         private readonly Dictionary<Guid, List<IService>> _servicesByTypeGuid = new Dictionary<Guid, List<IService>>();
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        public ServiceContractListing()
+        {
+            
+        }
+
+        /// <summary>
+        /// Private Constructor.
+        /// </summary>
+        /// <param name="a_parent">Parent listing.</param>
+        private ServiceContractListing(ServiceContractListing a_parent)
+        {
+            _parent = a_parent;
+        }
 
         /// <summary>
         /// Add the given service (<paramref name="a_service"/>) to this listing.
@@ -63,10 +82,14 @@ namespace SimpleIoc
 
             #endregion
 
+            var parentServices = Enumerable.Empty<IService>();
+            if (_parent != null)
+                parentServices = _parent.GetServices(a_contract);
+
             if (_servicesByTypeGuid.ContainsKey(a_contract.GUID))
-                return _servicesByTypeGuid[a_contract.GUID].AsReadOnly();
+                return parentServices.Concat(_servicesByTypeGuid[a_contract.GUID].AsReadOnly());
                 
-            return Enumerable.Empty<IService>();
+            return parentServices;
         }
 
 
@@ -95,7 +118,7 @@ namespace SimpleIoc
             if (_servicesByName.ContainsKey(name))
                 return _servicesByName[name];
 
-            return null;
+            return _parent?.GetService(a_contract, a_name);
         }
 
         /// <summary>
@@ -109,5 +132,15 @@ namespace SimpleIoc
             return a_contract.GUID + "+" + a_name;
         }
 
+        /// <summary>
+        /// Create a child of this contract listing.
+        /// </summary>
+        /// <returns>Created contract listing.</returns>
+        public ServiceContractListing CreateChild()
+        {
+            var child = new ServiceContractListing(this);
+
+            return child;
+        }
     }
 }

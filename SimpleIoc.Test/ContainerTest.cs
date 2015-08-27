@@ -290,6 +290,41 @@ namespace SimpleIoc.Test
         }
 
 
+        [TestMethod]
+        public void CreateChildContainer()
+        {
+            // Setup
+            var container = new Container();
+            container.Register<DependencyBase, Dependency1>();
+
+            // Execute
+            var child = container.CreateChild();
+
+            // Assert
+            Assert.IsNotNull(child);
+        }
+
+
+        [TestMethod]
+        public void CreateChildContainerAndRegisterInParent()
+        {
+            // Setup
+            var container = new Container();
+            container.Register<DependencyBase, Dependency1>();
+
+            // Execute
+            var child = container.CreateChild();
+            container.Register<ServiceBase, ServiceWithNoConstructors>();
+            var result = child.Resolve<ServiceBase>();
+
+            // Assert
+            Assert.IsNotNull(child);
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof (ServiceWithNoConstructors));
+        }
+
+
+
     }
 
 
