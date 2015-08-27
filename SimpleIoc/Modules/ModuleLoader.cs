@@ -13,12 +13,44 @@ namespace SimpleIoc.Modules
         /// </summary>
         public static IEnumerable<IModule> Discover()
         {
-            var moduleBase = typeof (IModule);
-            var moduleTypes = from assembly in AppDomain.CurrentDomain.GetAssemblies() 
-                from type in assembly.GetTypes()
-                where !type.IsAbstract && 
-                      moduleBase.IsAssignableFrom(type)
-                select type;
+            var moduleBase = typeof(IModule);
+            var moduleTypes = from assembly in AppDomain.CurrentDomain.GetAssemblies()
+                              from type in assembly.GetTypes()
+                              where !type.IsAbstract &&
+                                    moduleBase.IsAssignableFrom(type)
+                              select type;
+
+            foreach (var moduleType in moduleTypes)
+            {
+                var constructor = moduleType.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, Type.EmptyTypes, null);
+
+                var module = constructor?.Invoke(null) as IModule;
+
+                if (module != null)
+                    yield return module;
+            }
+        }
+
+        /// <summary>
+        /// Discover the modules from the given assembly (<paramref name="a_assembly"/>).
+        /// </summary>
+        /// <param name="a_assembly"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="a_assembly"/> is null.</exception>
+        public static IEnumerable<IModule> Discover(Assembly a_assembly)
+        {
+            #region Argument Validation
+
+            if (a_assembly == null)
+                throw new ArgumentNullException(nameof(a_assembly));
+
+            #endregion
+
+            var moduleBase = typeof(IModule);
+            var moduleTypes = from type in a_assembly.GetTypes()
+                              where !type.IsAbstract &&
+                                    moduleBase.IsAssignableFrom(type)
+                              select type;
 
             foreach (var moduleType in moduleTypes)
             {
