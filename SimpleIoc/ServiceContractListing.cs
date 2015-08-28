@@ -12,7 +12,10 @@ namespace SimpleIoc
     {
         private readonly ServiceContractListing _parent = null;
 
+        private readonly object l_serviceByName = new object();
         private readonly Dictionary<string, IService> _servicesByName = new Dictionary<string, IService>();
+
+        private readonly object l_servicesByTypeGuid = new object();
         private readonly Dictionary<Guid, List<IService>> _servicesByTypeGuid = new Dictionary<Guid, List<IService>>();
 
         /// <summary>
@@ -49,21 +52,26 @@ namespace SimpleIoc
             if (a_service.Contract == null)
                 throw new InvalidOperationException("Service does not have a contract type.");
 
-            List<IService> services;
+            lock (l_servicesByTypeGuid)
+            {
+                List<IService> services;
+                if (_servicesByTypeGuid.ContainsKey(a_service.Contract.GUID))
+                    services = _servicesByTypeGuid[a_service.Contract.GUID];
+                else
+                    services = _servicesByTypeGuid[a_service.Contract.GUID] = new List<IService>();
 
-            if (_servicesByTypeGuid.ContainsKey(a_service.Contract.GUID))
-                services = _servicesByTypeGuid[a_service.Contract.GUID];
-            else
-                services = _servicesByTypeGuid[a_service.Contract.GUID] = new List<IService>();
-
-            services.Add(a_service);
+                services.Add(a_service);
+            }
 
             if (a_service.Name != null)
             {
                 var name = CreateServiceName(a_service.Contract, a_service.Name);
 
-                if (!_servicesByName.ContainsKey(name))
-                    _servicesByName.Add(name, a_service);
+                lock (l_serviceByName)
+                {
+                    if (!_servicesByName.ContainsKey(name))
+                        _servicesByName.Add(name, a_service);
+                }
             }
         }
 
@@ -86,9 +94,12 @@ namespace SimpleIoc
             if (_parent != null)
                 parentServices = _parent.GetServices(a_contract);
 
-            if (_servicesByTypeGuid.ContainsKey(a_contract.GUID))
-                return parentServices.Concat(_servicesByTypeGuid[a_contract.GUID].AsReadOnly());
-                
+            lock (l_servicesByTypeGuid)
+            {
+                if (_servicesByTypeGuid.ContainsKey(a_contract.GUID))
+                    return parentServices.Concat(_servicesByTypeGuid[a_contract.GUID].AsReadOnly());
+            }
+
             return parentServices;
         }
 
@@ -115,8 +126,11 @@ namespace SimpleIoc
 
             var name = CreateServiceName(a_contract, a_name);
 
-            if (_servicesByName.ContainsKey(name))
-                return _servicesByName[name];
+            lock (l_serviceByName)
+            {
+                if (_servicesByName.ContainsKey(name))
+                    return _servicesByName[name];
+            }
 
             return _parent?.GetService(a_contract, a_name);
         }
