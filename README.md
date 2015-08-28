@@ -3,6 +3,7 @@ This is a simple to use universal inversion of control container.
 
 ##Basic Usage
 
+```C#
     public interface IContract { ... }
     public class MyService{ ... }
 
@@ -12,9 +13,11 @@ This is a simple to use universal inversion of control container.
     IContract service = container.Resolve<IContract>();
 
     Assert.IsTrue(service is Service);
+```
 
 ##Constructor Injection
 
+```C#
     public interface IContract { ... }
     public class MyDependency { ... }
     public class MyService : IContract 
@@ -29,9 +32,11 @@ This is a simple to use universal inversion of control container.
     IContract service = container.Resolve<IContract>();
 
     Assert.IsTrue(service is Service);
+```
 
 ##Function-Based Service Registry
 
+```C#
     public interface IContract { ... }
     public class MyService : IContract 
     {
@@ -45,9 +50,11 @@ This is a simple to use universal inversion of control container.
     IContract service = container.Resolve<IContract>();
     
     Assert.AreSame(service, someService);
+```
 
 ##Property Injection
 
+```C#
     public interface IContract { ... } 
     public MyDependency { ... }
     public class MyService : IContract
@@ -64,9 +71,11 @@ This is a simple to use universal inversion of control container.
     IContract service = container.Resolve<IContract>();    
     
     Assert.IsInstanceOfType((service as MyService).Dependency, typeof(MyDependency));
+```
     
 ##Module Loader
 
+```C#
     public MyModule : IModule 
     {
     	public void Bootstrap(Container a_container)
@@ -81,3 +90,4 @@ This is a simple to use universal inversion of control container.
     
     var container = new Container();
     modules.Bootstrap(container);
+```
