@@ -40,7 +40,7 @@ namespace SimpleIoc.Test.Factories
         {
             // Setup
             var container = new Container();
-            var service = new Service(container, typeof(Dependency1), typeof(DependencyBase));
+            var service = new Service(container, typeof(Dependency1), typeof(DependencyBase), null);
             var dependency = new Dependency(typeof (Dependency1));
 
             // Execute
@@ -56,7 +56,7 @@ namespace SimpleIoc.Test.Factories
         {
             // Setup
             var container = new Container();
-            var service = new Service(container, typeof(Dependency2), typeof(DependencyBase));
+            var service = new Service(container, typeof(Dependency2), typeof(DependencyBase), null);
             var dependency = new Dependency(typeof (Dependency1));
 
             // Execute
@@ -79,7 +79,7 @@ namespace SimpleIoc.Test.Factories
         {
             // Setup
             var container = new Container();
-            var service = new Service(container, typeof(Dependency2), typeof(DependencyBase));
+            var service = new Service(container, typeof(Dependency2), typeof(DependencyBase), null);
             var dependency = new Dependency(typeof(DependencyBase));
 
             // Execute
@@ -95,7 +95,7 @@ namespace SimpleIoc.Test.Factories
         {
             // Setup
             var container = new Container();
-            var service = new Service(container, typeof(DependencyBase), typeof(DependencyBase));
+            var service = new Service(container, typeof(DependencyBase), typeof(DependencyBase), null);
             var dependency = new Dependency(typeof(Dependency2));
 
             // Execute

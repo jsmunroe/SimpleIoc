@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SimpleIoc.Lifespan;
 
 namespace SimpleIoc.Test
 {
@@ -11,7 +12,7 @@ namespace SimpleIoc.Test
         {
             // Execute
             var container = new Container();
-            var service = new Service(container, typeof(string), typeof(string), "service name");
+            var service = new Service(container, typeof(string), typeof(string), "service name", null);
 
             // Assert
             Assert.AreSame(typeof(string), service.Type);
@@ -25,7 +26,7 @@ namespace SimpleIoc.Test
         {
             // Execute
             var container = new Container();
-            new Service(a_container: container, a_type: typeof(string), a_contract: null);
+            new Service(a_container: container, a_type: typeof(string), a_contract: null, a_lifespan: null);
         }
 
         [TestMethod]
@@ -34,7 +35,7 @@ namespace SimpleIoc.Test
         {
             // Execute
             var container = new Container();
-            new Service(a_container: container, a_type: null, a_contract: null);
+            new Service(a_container: container, a_type: null, a_contract: null, a_lifespan: null);
         }
 
         [TestMethod]
@@ -42,7 +43,7 @@ namespace SimpleIoc.Test
         public void ConstructServiceWithNullContainer()
         {
             // Execute
-            new Service(a_container: null, a_type: typeof(string), a_contract: typeof(string));
+            new Service(a_container: null, a_type: typeof(string), a_contract: typeof(string), a_lifespan: null);
         }
 
         [TestMethod]
@@ -50,7 +51,7 @@ namespace SimpleIoc.Test
         {
             // Setup
             var container = new Container();
-            var service = new Service(container, typeof(ServiceWithNoConstructors), typeof(ServiceBase));
+            var service = new Service(container, typeof(ServiceWithNoConstructors), typeof(ServiceBase), a_lifespan: null);
 
             // Execute
             var factories = service.Factories;
@@ -65,7 +66,7 @@ namespace SimpleIoc.Test
         {
             // Setup
             var container = new Container();
-            var service = new Service(container, typeof(ServiceWithDefaultConstructor), typeof(ServiceBase));
+            var service = new Service(container, typeof(ServiceWithDefaultConstructor), typeof(ServiceBase), a_lifespan: null);
 
             // Execute
             var factories = service.Factories;
@@ -80,7 +81,7 @@ namespace SimpleIoc.Test
         {
             // Setup
             var container = new Container();
-            var service = new Service(container, typeof(ServiceWithOneConstructor), typeof(ServiceBase));
+            var service = new Service(container, typeof(ServiceWithOneConstructor), typeof(ServiceBase), a_lifespan: null);
 
             // Execute
             var factories = service.Factories;
@@ -95,7 +96,7 @@ namespace SimpleIoc.Test
         {
             // Setup
             var container = new Container();
-            var service = new Service(container, typeof(ServiceWithMultipleConstructors), typeof(ServiceBase));
+            var service = new Service(container, typeof(ServiceWithMultipleConstructors), typeof(ServiceBase), a_lifespan: null);
 
             // Execute
             var factories = service.Factories;
@@ -110,7 +111,7 @@ namespace SimpleIoc.Test
         {
             // Setup
             var container = new Container();
-            var service = new Service(container, typeof(ServiceWithNoConstructors), typeof(ServiceBase));
+            var service = new Service(container, typeof(ServiceWithNoConstructors), typeof(ServiceBase), a_lifespan: null);
 
             // Execute
             var serviceInstance = service.Resolve();
@@ -125,7 +126,7 @@ namespace SimpleIoc.Test
         {
             // Setup
             var container = new Container();
-            var service = new Service(container, typeof(ServiceWithDefaultConstructor), typeof(ServiceBase));
+            var service = new Service(container, typeof(ServiceWithDefaultConstructor), typeof(ServiceBase), a_lifespan: null);
 
             // Execute
             var serviceInstance = service.Resolve();
@@ -141,7 +142,7 @@ namespace SimpleIoc.Test
         {
             // Setup
             var container = new Container();
-            var service = new Service(container, typeof(ServiceWithOneConstructor), typeof(ServiceBase));
+            var service = new Service(container, typeof(ServiceWithOneConstructor), typeof(ServiceBase), a_lifespan: null);
             
             // Execute
             var serviceInstance = service.Resolve();
@@ -157,7 +158,7 @@ namespace SimpleIoc.Test
             // Setup
             var container = new Container();
             container.Register<DependencyBase, Dependency1>();
-            var service = new Service(container, typeof(ServiceWithOneConstructor), typeof(ServiceBase));
+            var service = new Service(container, typeof(ServiceWithOneConstructor), typeof(ServiceBase), a_lifespan: null);
 
             // Execute
             var serviceInstance = service.Resolve();
@@ -169,7 +170,7 @@ namespace SimpleIoc.Test
             // Setup
             var container = new Container();
             container.Register<DependencyBase, Dependency1>();
-            var service = new Service(container, typeof(ServiceWithMultipleConstructors), typeof(ServiceBase));
+            var service = new Service(container, typeof(ServiceWithMultipleConstructors), typeof(ServiceBase), a_lifespan: null);
 
             // Execute
             var serviceInstance = service.Resolve();
@@ -188,7 +189,7 @@ namespace SimpleIoc.Test
             var container = new Container();
             container.Register<DependencyBase, Dependency1>();
             container.Register<Dependency2, Dependency2>();
-            var service = new Service(container, typeof(ServiceWithMultipleConstructors), typeof(ServiceBase));
+            var service = new Service(container, typeof(ServiceWithMultipleConstructors), typeof(ServiceBase), a_lifespan: null);
 
             // Execute
             var serviceInstance = service.Resolve();
@@ -206,7 +207,7 @@ namespace SimpleIoc.Test
             // Setup
             var container = new Container();
             container.Register<DependencyBase, Dependency1>();
-            var service = new Service(container, typeof(ServiceWithRequiredProperty), typeof(ServiceBase));
+            var service = new Service(container, typeof(ServiceWithRequiredProperty), typeof(ServiceBase), a_lifespan: null);
 
             // Execute 
             var serviceInstance = service.Resolve();
@@ -217,6 +218,59 @@ namespace SimpleIoc.Test
             var instance = serviceInstance as ServiceWithRequiredProperty;
             Assert.IsInstanceOfType(instance.Dependency, typeof (Dependency1));
         }
+
+
+        [TestMethod]
+        public void ResolveServiceTwiceWithNoLifespan()
+        {
+            // Setup
+            var lifespan = new ContainerLifespan();
+            var container = new Container();
+            var service = new Service(container, typeof(ServiceWithDefaultConstructor), typeof(ServiceBase), a_lifespan: null);
+
+            // Execute 
+            var serviceInstance1 = service.Resolve();
+            var serviceInstance2 = service.Resolve();
+
+            // Assert
+            Assert.AreNotSame(serviceInstance1, serviceInstance2);
+        }
+
+
+        [TestMethod]
+        public void ResolveServiceTwiceWithContainerLifespan()
+        {
+            // Setup
+            var lifespan = new ContainerLifespan();
+            var container = new Container();
+            var service = new Service(container, typeof(ServiceWithDefaultConstructor), typeof(ServiceBase), a_lifespan: lifespan);
+
+            // Execute 
+            var serviceInstance1 = service.Resolve();
+            var serviceInstance2 = service.Resolve();
+
+            // Assert
+            Assert.AreSame(serviceInstance1, serviceInstance2);
+        }
+
+
+        [TestMethod]
+        public void ResolveServiceTwiceWithCacheLifespan()
+        {
+            // Setup
+            var lifespan = new CacheLifespan(TimeSpan.FromMinutes(5));
+            var container = new Container();
+            var service = new Service(container, typeof(ServiceWithDefaultConstructor), typeof(ServiceBase), a_lifespan: lifespan);
+
+            // Execute 
+            var serviceInstance1 = service.Resolve();
+            var serviceInstance2 = service.Resolve();
+
+            // Assert
+            Assert.AreSame(serviceInstance1, serviceInstance2);
+        }
+
+
 
     }
 }

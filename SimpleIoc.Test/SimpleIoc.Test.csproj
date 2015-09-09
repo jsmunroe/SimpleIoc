@@ -55,6 +55,9 @@
     <Compile Include="ContainerTest.cs" />
     <Compile Include="Factories\ConstructorDependencyTest.cs" />
     <Compile Include="Factories\PropertyDependencyTest.cs" />
+    <Compile Include="Lifespan\ContainerLifespanTest.cs" />
+    <Compile Include="Lifespan\CacheLifespanTest.cs" />
+    <Compile Include="Lifespan\DefaultLifespanTest.cs" />
     <Compile Include="Modules\FakeModule.cs" />
     <Compile Include="Modules\ModuleTest.cs" />
     <Compile Include="Modules\ModuleLoaderTest.cs" />

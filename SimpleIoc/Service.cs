@@ -5,12 +5,14 @@ using System.Reflection;
 using System.Runtime.Remoting.Channels;
 using SimpleIoc.Contracts;
 using SimpleIoc.Factories;
+using SimpleIoc.Lifespan;
 
 namespace SimpleIoc
 {
     public class Service : IService
     {
         private readonly Container _container;
+        private readonly ILifespan _lifespan;
 
         /// <summary>
         /// Constructor.
@@ -19,10 +21,11 @@ namespace SimpleIoc
         /// <param name="a_type">Contract of service.</param>
         /// <param name="a_contract">Contract of this service.</param>
         /// <param name="a_name">Name of this service.</param>
-        /// <exception cref="ArgumentNullException">Thrown if "<paramref name="a_type"/>" is null.</exception>
+        /// <param name="a_lifespan">Lifespan for resolved instances.</param>
         /// <exception cref="ArgumentNullException">Thrown if "<paramref name="a_container"/>" is null.</exception>
-        /// <exception cref="ArgumentNullException">Thrown if "<paramref name="a_name"/>" is null.</exception>
-        public Service(Container a_container, Type a_type, Type a_contract, string a_name = null)
+        /// <exception cref="ArgumentNullException">Thrown if "<paramref name="a_type"/>" is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if "<paramref name="a_contract"/>" is null.</exception>
+        public Service(Container a_container, Type a_type, Type a_contract, string a_name, ILifespan a_lifespan)
         {
             #region Argument Validation
 
@@ -41,6 +44,41 @@ namespace SimpleIoc
             Contract = a_contract;
             Type = a_type;
             Name = a_name;
+            _lifespan = a_lifespan ?? new DefaultLifespan();
+
+            Factories = DiscoverFactories();
+        }
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="a_container">Container that owns this service.</param>
+        /// <param name="a_type">Contract of service.</param>
+        /// <param name="a_contract">Contract of this service.</param>
+        /// <param name="a_lifespan">Lifespan for resolved instances.</param>
+        /// <exception cref="ArgumentNullException">Thrown if "<paramref name="a_container"/>" is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if "<paramref name="a_type"/>" is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if "<paramref name="a_contract"/>" is null.</exception>
+        public Service(Container a_container, Type a_type, Type a_contract, ILifespan a_lifespan)
+        {
+            #region Argument Validation
+
+            if (a_container == null)
+                throw new ArgumentNullException(nameof(a_container));
+
+            if (a_type == null)
+                throw new ArgumentNullException(nameof(a_type));
+
+            if (a_contract == null)
+                throw new ArgumentNullException(nameof(a_contract));
+
+            #endregion
+
+            _container = a_container;
+            Contract = a_contract;
+            Type = a_type;
+            Name = null;
+            _lifespan = a_lifespan ?? new DefaultLifespan();
 
             Factories = DiscoverFactories();
         }
@@ -76,13 +114,21 @@ namespace SimpleIoc
 
             var selectedFactory = Factories.FirstOrDefault(i => i.CanCreate);
 
-            // TODO: Cache selected factory. Relinquishing when the parent container is changed.
-            // TODO: Enable attribute constructor selection.
+            var instance = _lifespan.Instance;
+            if (instance != null)
+            {
+                _lifespan.Refresh();
+                return instance;
+            }
 
             if (selectedFactory == null)
-                throw new InvalidOperationException("Service cannot be resolved.");
+                throw new InvalidOperationException($"Service cannot be resolved (Contract = '{Contract.FullName}', Type = '{Type.FullName}', Name = '{Name}').");
 
-            return selectedFactory.Create();
+            instance = selectedFactory.Create();
+
+            _lifespan.Hold(instance);
+
+            return instance;
         }
 
         /// <summary>

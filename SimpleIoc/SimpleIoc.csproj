@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contracts\IBootstrappable.cs" />
+    <Compile Include="Contracts\ILifespan.cs" />
     <Compile Include="Factories\ConstructorDependency.cs" />
     <Compile Include="Factories\PropertyDependency.cs" />
     <Compile Include="Factories\ActivateFactory.cs" />
@@ -52,6 +53,9 @@
     <Compile Include="Factories\FuncFactory.cs" />
     <Compile Include="FuncService.cs" />
     <Compile Include="Contracts\IModule.cs" />
+    <Compile Include="Lifespan\CacheLifespan.cs" />
+    <Compile Include="Lifespan\ContainerLifespan.cs" />
+    <Compile Include="Lifespan\DefaultLifespan.cs" />
     <Compile Include="Modules\ModuleLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service.cs" />

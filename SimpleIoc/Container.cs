@@ -40,34 +40,37 @@ namespace SimpleIoc
         /// <summary>
         /// Register the given service (<typeparamref name="TService"/>) as the given contract (<typeparamref name="TContract"/>).
         /// </summary>
+        /// <param name="a_lifespan">Instance lifespan.</param>
         /// <typeparam name="TContract">Type of contract.</typeparam>
         /// <typeparam name="TService">Type of service.</typeparam>
-        public void Register<TContract, TService>()
+        public void Register<TContract, TService>(ILifespan a_lifespan = null)
             where TService : TContract
         {
             if (_services.GetServices(typeof(TContract)).Any())
                 throw new ContainerException($"Service is already registered with contract type '{typeof(TContract).Name}'.");
 
-            var newService = new Service(this, typeof(TService), typeof(TContract));
+            var newService = new Service(this, typeof(TService), typeof(TContract), a_lifespan);
             _services.Add(newService);
         }
 
         /// <summary>
         /// Register the given service (<typeparamref name="TService"/>) as itself.
         /// </summary>
+        /// <param name="a_lifespan">Instance lifespan.</param>
         /// <typeparam name="TService">Service type.</typeparam>
-        public void Register<TService>()
+        public void Register<TService>(ILifespan a_lifespan = null)
         {
-            Register<TService, TService>();
+            Register<TService, TService>(a_lifespan);
         }
 
         /// <summary>
         /// Register the given service (<typeparamref name="TService"/>) as the given contract (<typeparamref name="TContract"/>) with the given name (<paramref name="a_name"/>).
         /// </summary>
         /// <param name="a_name">Service name.</param>
+        /// <param name="a_lifespan">Instance lifespan.</param>
         /// <typeparam name="TContract">Type of contract.</typeparam>
         /// <typeparam name="TService">Type of service.</typeparam>
-        public void Register<TContract, TService>(string a_name)
+        public void Register<TContract, TService>(string a_name, ILifespan a_lifespan = null)
             where TService : TContract
         {
             if (_services.GetServices(typeof(TContract)).Any(i => i.Name == null))
@@ -76,7 +79,7 @@ namespace SimpleIoc
             if (_services.GetService(typeof(TContract), a_name) != null)
                 throw new ContainerException($"Service is already registered with contract type '{typeof(TContract).Name}' and with the name '{a_name}'.");
 
-            var newService = new Service(this, typeof(TService), typeof(TContract), a_name);
+            var newService = new Service(this, typeof(TService), typeof(TContract), a_name, a_lifespan);
             _services.Add(newService);
         }
 
@@ -85,7 +88,8 @@ namespace SimpleIoc
         /// </summary>
         /// <typeparam name="TService">Service type.</typeparam>
         /// <param name="a_name">Service name.</param>
-        public void Register<TService>(string a_name)
+        /// <param name="a_lifespan">Instance lifespan.</param>
+        public void Register<TService>(string a_name, ILifespan a_lifespan = null)
         {
             Register<TService, TService>(a_name);
         }
@@ -95,7 +99,8 @@ namespace SimpleIoc
         /// </summary>
         /// <typeparam name="TContract">Type of contract.</typeparam>
         /// <param name="a_func">Service function.</param>
-        public void Register<TContract>(Func<TContract> a_func)
+        /// <param name="a_lifespan">Instance lifespan.</param>
+        public void Register<TContract>(Func<TContract> a_func, ILifespan a_lifespan = null)
         {
             if (_services.GetServices(typeof(TContract)).Any())
                 throw new ContainerException($"Service is already registered with contract type '{typeof(TContract).Name}'.");
@@ -110,7 +115,8 @@ namespace SimpleIoc
         /// <typeparam name="TContract">Type of contract.</typeparam>
         /// <param name="a_func">Service function.</param>
         /// <param name="a_name">Service name.</param>
-        public void Register<TContract>(Func<TContract> a_func, string a_name)
+        /// <param name="a_lifespan">Instance lifespan.</param>
+        public void Register<TContract>(Func<TContract> a_func, string a_name, ILifespan a_lifespan = null)
         {
             if (_services.GetServices(typeof(TContract)).Any(i => i.Name == null))
                 throw new ContainerException($"Service is already registered with contract type '{typeof(TContract).Name}' and without a name.");
@@ -243,7 +249,7 @@ namespace SimpleIoc
         /// <returns>Built service instance.</returns>
         private object BuildContract(Type a_contract)
         {
-            var service = new Service(this, a_contract, a_contract);
+            var service = new Service(this, a_contract, a_contract, null);
 
             return BuildService(service);
         }
