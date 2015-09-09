@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="ContainerTest.cs" />
     <Compile Include="Factories\ConstructorDependencyTest.cs" />
+    <Compile Include="Factories\InstanceFactoryTest.cs" />
     <Compile Include="Factories\PropertyDependencyTest.cs" />
     <Compile Include="Lifespan\ContainerLifespanTest.cs" />
     <Compile Include="Lifespan\CacheLifespanTest.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="FuncServiceTest.cs" />
     <Compile Include="Factories\FuncFactoryTest.cs" />
     <Compile Include="ServiceContractListingTest.cs" />
+    <Compile Include="InstanceServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SimpleIoc\SimpleIoc.csproj">

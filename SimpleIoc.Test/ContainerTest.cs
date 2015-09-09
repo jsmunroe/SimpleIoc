@@ -240,6 +240,60 @@ namespace SimpleIoc.Test
             container.Register<DependencyBase, Dependency2>("Dependency2");
         }
 
+
+        [TestMethod]
+        public void RegisterInstance()
+        {
+            // Setup
+            var container = new Container();
+            var service = new ServiceWithNoConstructors();
+
+            // Execute
+            container.RegisterInstance<ServiceBase>(service);
+
+            // Assert
+            var result = container.Resolve<ServiceBase>();
+            Assert.AreSame(result, service);
+        }
+
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void RegisterInstanceWithNull()
+        {
+            // Setup
+            var container = new Container();
+
+            // Execute
+            container.RegisterInstance<ServiceBase>(a_instance: null);
+        }
+
+        [TestMethod]
+        public void RegisterInstanceWithName()
+        {
+            // Setup
+            var container = new Container();
+            var service = new ServiceWithNoConstructors();
+
+            // Execute
+            container.RegisterInstance<ServiceBase>(service, "noconstructors");
+
+            // Assert
+            var result = container.Resolve<ServiceBase>("noconstructors");
+            Assert.AreSame(result, service);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void RegisterInstanceWithNameAndNullInstance()
+        {
+            // Setup
+            var container = new Container();
+
+            // Execute
+            container.RegisterInstance<ServiceBase>(a_instance: null, a_name: "noconstructors");
+        }
+
         [TestMethod]
         public void ResolveMultipleServices()
         {

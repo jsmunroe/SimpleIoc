@@ -5,12 +5,12 @@ namespace SimpleIoc.Contracts
     public interface IService
     {
         /// <summary>
-        /// Contract of this service.
+        /// Type of this service.
         /// </summary>
         Type Type { get; }
 
         /// <summary>
-        /// Constract type of this service.
+        /// Contract type of this service.
         /// </summary>
         Type Contract { get; }
 

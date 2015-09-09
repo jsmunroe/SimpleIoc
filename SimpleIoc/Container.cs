@@ -37,6 +37,8 @@ namespace SimpleIoc
             _services = a_services;
         }
 
+        // TODO: Register with type parameters.
+
         /// <summary>
         /// Register the given service (<typeparamref name="TService"/>) as the given contract (<typeparamref name="TContract"/>).
         /// </summary>
@@ -91,7 +93,39 @@ namespace SimpleIoc
         /// <param name="a_lifespan">Instance lifespan.</param>
         public void Register<TService>(string a_name, ILifespan a_lifespan = null)
         {
-            Register<TService, TService>(a_name);
+            Register<TService, TService>(a_name, a_lifespan);
+        }
+
+        /// <summary>
+        /// Register the given instance as the given contract (<typeparamref name="TContract"/>.
+        /// </summary>
+        /// <typeparam name="TContract">Type of contract.</typeparam>
+        /// <param name="a_instance">Instance that resolves the contract.</param>
+        public void RegisterInstance<TContract>(TContract a_instance)
+        {
+            if (_services.GetServices(typeof(TContract)).Any())
+                throw new ContainerException($"Service is already registered with contract type '{typeof(TContract).Name}'.");
+
+            var newService = new InstanceService(typeof(TContract), a_instance);
+            _services.Add(newService);
+        }
+
+        /// <summary>
+        /// Register the given instance as the given contract (<typeparamref name="TContract"/>.
+        /// </summary>
+        /// <typeparam name="TContract">Type of contract.</typeparam>
+        /// <param name="a_instance">Instance that resolves the contract.</param>
+        /// <param name="a_name">Service name.</param>
+        public void RegisterInstance<TContract>(TContract a_instance, string a_name)
+        {
+            if (_services.GetServices(typeof(TContract)).Any(i => i.Name == null))
+                throw new ContainerException($"Service is already registered with contract type '{typeof(TContract).Name}' and without a name.");
+
+            if (_services.GetService(typeof(TContract), a_name) != null)
+                throw new ContainerException($"Service is already registered with contract type '{typeof(TContract).Name}' and with the name '{a_name}'.");
+
+            var newService = new InstanceService(typeof (TContract), a_instance, a_name);
+            _services.Add(newService);
         }
 
         /// <summary>
