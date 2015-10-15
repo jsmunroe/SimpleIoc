@@ -175,12 +175,53 @@ namespace SimpleIoc
         /// <summary>
         /// Resolve the service registered with the given contract type (<typeparamref name="TContract"/>).
         /// </summary>
+        /// <typeparam name="TContract">Type of contract.</typeparam>
+        /// <param name="a_service">(output) Resolved service instance.</param>
+        /// <returns>True iff contract can be resolved.</returns>
+        public bool TryResolve<TContract>(out TContract a_service)
+        {
+            try
+            {
+                a_service = (TContract)BuildServiceForContract(typeof(TContract));
+                return true;
+            }
+            catch (Exception)
+            {
+                a_service = default(TContract);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Resolve the service registered with the given contract type (<typeparamref name="TContract"/>).
+        /// </summary>
         /// <param name="a_name">Service name.</param>
         /// <typeparam name="TContract">Type of contract.</typeparam>
         /// <returns>Resolved service instance.</returns>
         public TContract Resolve<TContract>(string a_name)
         {
             return (TContract)BuildServiceForContract(typeof(TContract), a_name);
+        }
+
+        /// <summary>
+        /// Resolve the service registered with the given contract type (<typeparamref name="TContract"/>).
+        /// </summary>
+        /// <typeparam name="TContract">Type of contract.</typeparam>
+        /// <param name="a_service">(output) Resolved service instance.</param>
+        /// <param name="a_name">Service name.</param>
+        /// <returns>True iff contract can be resolved.</returns>
+        public bool TryResolve<TContract>(out TContract a_service, string a_name)
+        {
+            try
+            {
+                a_service = (TContract)BuildServiceForContract(typeof(TContract), a_name);
+                return true;
+            }
+            catch (Exception)
+            {
+                a_service = default(TContract);
+                return false;
+            }
         }
 
         /// <summary>
@@ -194,10 +235,62 @@ namespace SimpleIoc
         }
 
         /// <summary>
-        /// Resolve all services registerd with the given contract type (<typeparamref name="TContract"/>).
+        /// Resolve the service registered with the given contract type (<paramref name="a_type"/>).
         /// </summary>
-        /// <typeparam name="TContract">Contract type.</typeparam>
-        /// <returns>All service instances of the contract type.</returns>
+        /// <param name="a_type">Type of contract.</param>
+        /// <param name="a_service">(output) Resolved service instance.</param>
+        /// <returns>True iff contract can be resolved.</returns>
+        public bool TryResolve(Type a_type, out object a_service)
+        {
+            try
+            {
+                a_service = BuildServiceForContract(a_type);
+                return true;
+            }
+            catch (Exception)
+            {
+                a_service = null;
+                return false;
+            }
+        }
+        
+        /// <summary>
+        /// Register the service registered with the given contract type (<paramref name="a_type"/>)
+        /// </summary>
+        /// <param name="a_type">Type of contract.</param>
+        /// <param name="a_name">Service name.</param>
+        /// <returns>True if contract type was resolved.</returns>
+        public object Resolve(Type a_type, string a_name)
+        {
+            return BuildServiceForContract(a_type, a_name);
+        }
+
+        /// <summary>
+        /// Register the service registered with the given contract type (<paramref name="a_type"/>)
+        /// </summary>
+        /// <param name="a_type">Type of contract.</param>
+        /// <param name="a_service">(output) Resolved service instance.</param>
+        /// <param name="a_name">Service name.</param>
+        /// <returns>True iff contract can be resolved.</returns>
+        public bool TryResolve(Type a_type, string a_name, out object a_service)
+        {
+            try
+            {
+                a_service = BuildServiceForContract(a_type, a_name);
+                return true;
+            }
+            catch (Exception)
+            {
+                a_service = null;
+                return false;
+            }
+        }
+        
+        /// <summary>
+                /// Resolve all services registerd with the given contract type (<typeparamref name="TContract"/>).
+                /// </summary>
+                /// <typeparam name="TContract">Contract type.</typeparam>
+                /// <returns>All service instances of the contract type.</returns>
         public IEnumerable<TContract> ResolveAll<TContract>()
         {
             return _services.GetServices(typeof(TContract)).Select(BuildService).OfType<TContract>();
@@ -223,17 +316,6 @@ namespace SimpleIoc
         {
             var existing = _services.GetServices(a_type).FirstOrDefault();
             return existing;
-        }
-
-        /// <summary>
-        /// Register the service registered with the given contract type (<paramref name="a_type"/>)
-        /// </summary>
-        /// <param name="a_type">Type of contract.</param>
-        /// <param name="a_name">Service name.</param>
-        /// <returns>True if contract type was resolved.</returns>
-        public object Resolve(Type a_type, string a_name)
-        {
-            return BuildServiceForContract(a_type, a_name);
         }
 
         /// <summary>
@@ -304,6 +386,5 @@ namespace SimpleIoc
                 throw new ContainerException($"Could not build the service of type '{a_service.Type.Name}' for contract '{a_service.Contract.Name}'.", ex);
             }
         }
-
     }
 }

@@ -41,6 +41,22 @@ namespace SimpleIoc.Test
         }
 
         [TestMethod]
+        public void TryResolve()
+        {
+            // Setup
+            var container = new Container();
+            container.Register<ServiceBase, ServiceWithNoConstructors>();
+
+            // Execute
+            ServiceBase serviceBase;
+            bool result = container.TryResolve(out serviceBase);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.IsInstanceOfType(serviceBase, typeof(ServiceWithNoConstructors));
+        }
+
+        [TestMethod]
         public void ResolveServiceWithTypeObject()
         {
             // Setup
@@ -52,6 +68,23 @@ namespace SimpleIoc.Test
 
             // Assert
             Assert.IsNotNull(service);
+            Assert.IsTrue(service is ServiceWithNoConstructors);
+        }
+
+
+        [TestMethod]
+        public void TryResolveServiceWithTypeObject()
+        {
+            // Setup
+            var container = new Container();
+            container.Register<ServiceBase, ServiceWithNoConstructors>();
+
+            // Execute
+            object service;
+            var result = container.TryResolve(typeof (ServiceBase), out service);
+
+            // Assert
+            Assert.IsTrue(result);
             Assert.IsTrue(service is ServiceWithNoConstructors);
         }
 
@@ -67,6 +100,21 @@ namespace SimpleIoc.Test
         }
 
         [TestMethod]
+        public void TryResolveUnregisteredService()
+        {
+            // Setup
+            var container = new Container();
+
+            // Execute
+            ServiceBase service;
+            var result = container.TryResolve(out service);
+
+            // Assert
+            Assert.IsFalse(result);
+            Assert.IsNull(service);
+        }
+
+        [TestMethod]
         public void ResolveServiceWithName()
         {
             // Setup
@@ -78,6 +126,22 @@ namespace SimpleIoc.Test
 
             // Assert
             Assert.IsNotNull(service);
+            Assert.IsTrue(service is ServiceWithNoConstructors);
+        }
+
+        [TestMethod]
+        public void TryResolveServiceWithName()
+        {
+            // Setup
+            var container = new Container();
+            container.Register<ServiceBase, ServiceWithNoConstructors>("MyService");
+
+            // Execute
+            ServiceBase service;
+            var result = container.TryResolve(out service);
+
+            // Assert
+            Assert.IsTrue(result);
             Assert.IsTrue(service is ServiceWithNoConstructors);
         }
 
@@ -97,6 +161,22 @@ namespace SimpleIoc.Test
         }
 
         [TestMethod]
+        public void TryResolveServiceWithNameAndTypeObject()
+        {
+            // Setup
+            var container = new Container();
+            container.Register<ServiceBase, ServiceWithNoConstructors>("MyService");
+
+            // Execute
+            object service;
+            var result = container.TryResolve(typeof (ServiceBase), "MyService", out service);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.IsTrue(service is ServiceWithNoConstructors);
+        }
+
+        [TestMethod]
         public void ResolveFuncServiceWithName()
         {
             // Setup
@@ -108,6 +188,22 @@ namespace SimpleIoc.Test
 
             // Assert
             Assert.IsNotNull(service);
+            Assert.IsTrue(service is ServiceWithNoConstructors);
+        }
+
+        [TestMethod]
+        public void TryResolveFuncServiceWithName()
+        {
+            // Setup
+            var container = new Container();
+            container.Register<ServiceBase>(() => new ServiceWithNoConstructors(), "MyService");
+
+            // Execute
+            object service;
+            var result = container.TryResolve(typeof (ServiceBase), "MyService", out service);
+
+            // Assert
+            Assert.IsTrue(result);
             Assert.IsTrue(service is ServiceWithNoConstructors);
         }
 
@@ -128,6 +224,23 @@ namespace SimpleIoc.Test
         }
 
         [TestMethod]
+        public void TryResolveServiceWithDependency()
+        {
+            // Setup
+            var container = new Container();
+            container.Register<DependencyBase, Dependency1>();
+            container.Register<ServiceBase, ServiceWithOneConstructor>();
+
+            // Execute
+            ServiceBase service;
+            var result = container.TryResolve<ServiceBase>(out service);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.IsTrue(service is ServiceWithOneConstructor);
+        }
+
+        [TestMethod]
         public void ResolveComplexService()
         {
             // Setup
@@ -142,6 +255,24 @@ namespace SimpleIoc.Test
 
             // Assert
             Assert.IsNotNull(service);
+        }
+
+        [TestMethod]
+        public void TryResolveComplexService()
+        {
+            // Setup
+            var container = new Container();
+            container.Register<ComplexService1, ComplexService1>();
+            container.Register<ComplexService2, ComplexService2>();
+            container.Register<ComplexService3, ComplexService3>();
+            container.Register<DependencyBase, Dependency1>();
+
+            // Execute
+            ComplexService1 service;
+            var result = container.TryResolve<ComplexService1>(out service);
+
+            // Assert
+            Assert.IsTrue(result);
         }
 
         [TestMethod]
@@ -178,6 +309,22 @@ namespace SimpleIoc.Test
             // Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(ServiceWithNoConstructors));
+        }
+
+        [TestMethod]
+        public void TryResolveFuncService()
+        {
+            // Setup
+            var container = new Container();
+            container.Register<ServiceBase>(() => new ServiceWithNoConstructors());
+
+            // Execute
+            ServiceBase service;
+            var result = container.TryResolve<ServiceBase>(out service);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.IsInstanceOfType(service, typeof(ServiceWithNoConstructors));
         }
 
         [TestMethod]
@@ -329,7 +476,7 @@ namespace SimpleIoc.Test
         }
 
         [TestMethod]
-        public void ResolveAnUnregisteredService()
+        public void ResolveServiceThatIsConstructableWithoutRegistration()
         {
             // Setup
             var container = new Container();
@@ -343,6 +490,21 @@ namespace SimpleIoc.Test
             Assert.IsTrue(service != null);
         }
 
+        [TestMethod]
+        public void TryResolveServiceThatIsConstructableWithoutRegistration()
+        {
+            // Setup
+            var container = new Container();
+            container.Register<DependencyBase, Dependency1>();
+
+            // Execute
+            ServiceWithOneConstructor service;
+            var result = container.TryResolve<ServiceWithOneConstructor>(out service);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.IsTrue(service != null);
+        }
 
         [TestMethod]
         public void CreateChildContainer()
@@ -372,9 +534,27 @@ namespace SimpleIoc.Test
             var result = child.Resolve<ServiceBase>();
 
             // Assert
-            Assert.IsNotNull(child);
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof (ServiceWithNoConstructors));
+        }
+
+        [TestMethod]
+        public void CreateChildContainerAndTryRegisterInParent()
+        {
+            // Setup
+            var container = new Container();
+            container.Register<DependencyBase, Dependency1>();
+
+            // Execute
+            var child = container.CreateChild();
+            container.Register<ServiceBase, ServiceWithNoConstructors>();
+
+            ServiceBase service;
+            var result = child.TryResolve<ServiceBase>(out service);
+
+            // Assert
+            Assert.IsTrue(result);
+            Assert.IsInstanceOfType(service, typeof(ServiceWithNoConstructors));
         }
 
 
