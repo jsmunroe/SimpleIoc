@@ -9,7 +9,7 @@
     <projectUrl>https://github.com/jsmunroe/SimpleIoc</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Simple to use universal inversion of control container.</description>
-    <releaseNotes></releaseNotes>
+    <releaseNotes>https://github.com/jsmunroe/SimpleIoc</releaseNotes>
     <copyright>Copyright &#x00A9; JSMunroe.com. All rights reserved.</copyright>
     <tags>IOC Container Inversion SimpleIOC</tags>
   </metadata>
