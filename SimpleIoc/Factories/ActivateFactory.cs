@@ -82,7 +82,7 @@ namespace SimpleIoc.Factories
         /// </summary>
         /// <param name="a_container">Container.</param>
         /// <returns>True if the factory's dependencies have been completely fulfilled.</returns>
-        public bool Fulfill(Container a_container)
+        public bool Fulfill(IContainer a_container)
         {
             var fulfilled = true;
 

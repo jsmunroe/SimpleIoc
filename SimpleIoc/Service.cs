@@ -11,7 +11,7 @@ namespace SimpleIoc
 {
     public class Service : IService
     {
-        private readonly Container _container;
+        private readonly IContainer _container;
         private readonly ILifespan _lifespan;
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace SimpleIoc
         /// <exception cref="ArgumentNullException">Thrown if "<paramref name="a_container"/>" is null.</exception>
         /// <exception cref="ArgumentNullException">Thrown if "<paramref name="a_type"/>" is null.</exception>
         /// <exception cref="ArgumentNullException">Thrown if "<paramref name="a_contract"/>" is null.</exception>
-        public Service(Container a_container, Type a_type, Type a_contract, string a_name, ILifespan a_lifespan)
+        public Service(IContainer a_container, Type a_type, Type a_contract, string a_name, ILifespan a_lifespan)
         {
             #region Argument Validation
 
@@ -59,7 +59,7 @@ namespace SimpleIoc
         /// <exception cref="ArgumentNullException">Thrown if "<paramref name="a_container"/>" is null.</exception>
         /// <exception cref="ArgumentNullException">Thrown if "<paramref name="a_type"/>" is null.</exception>
         /// <exception cref="ArgumentNullException">Thrown if "<paramref name="a_contract"/>" is null.</exception>
-        public Service(Container a_container, Type a_type, Type a_contract, ILifespan a_lifespan)
+        public Service(IContainer a_container, Type a_type, Type a_contract, ILifespan a_lifespan)
         {
             #region Argument Validation
 

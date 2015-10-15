@@ -24,7 +24,7 @@ namespace SimpleIoc.Contracts
         /// </summary>
         /// <param name="a_container">Container.</param>
         /// <returns>True if the factory's dependencies have been completely fulfilled.</returns>
-        bool Fulfill(Container a_container);
+        bool Fulfill(IContainer a_container);
 
         /// <summary>
         /// Create the service instance.

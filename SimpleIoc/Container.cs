@@ -8,7 +8,7 @@ using SimpleIoc.Contracts;
 
 namespace SimpleIoc
 {
-    public class Container
+    public class Container : IContainer
     {
         private readonly ServiceContractListing _services = new ServiceContractListing();
 
@@ -312,7 +312,7 @@ namespace SimpleIoc
         /// </summary>
         /// <param name="a_type"></param>
         /// <returns>Resolved service.</returns>
-        internal IService ResolveService(Type a_type)
+        public IService ResolveService(Type a_type)
         {
             var existing = _services.GetServices(a_type).FirstOrDefault();
             return existing;
@@ -322,7 +322,7 @@ namespace SimpleIoc
         /// Create a child of this container.
         /// </summary>
         /// <returns>Created child container.</returns>
-        public Container CreateChild()
+        public IContainer CreateChild()
         {
             var listing = _services.CreateChild();
             var child = new Container(listing);

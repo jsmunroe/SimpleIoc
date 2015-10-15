@@ -68,7 +68,7 @@ namespace SimpleIoc.Modules
         /// </summary>
         /// <param name="a_this">"This" sequence of modules.</param>
         /// <param name="a_container">Container into which to bootstrap.</param>
-        public static void Bootstrap(this IEnumerable<IModule> a_this, Container a_container)
+        public static void Bootstrap(this IEnumerable<IModule> a_this, IContainer a_container)
         {
             foreach (var module in a_this)
                 module.Bootstrap(a_container);
@@ -78,7 +78,7 @@ namespace SimpleIoc.Modules
         /// Bootstrap all modules in this app domain into "this" container (<paramref name="a_container"/>).
         /// </summary>
         /// <param name="a_container">Container into which to bootstrap.</param>
-        public static void Bootstrap(this Container a_container)
+        public static void Bootstrap(this IContainer a_container)
         {
             Discover().Bootstrap(a_container);
         }

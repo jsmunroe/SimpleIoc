@@ -24,7 +24,7 @@ namespace SimpleIoc.Test.Modules
         /// Bootstrap this instance against the given container (<paramref name="a_container"/>).
         /// </summary>
         /// <param name="a_container">Container.</param>
-        public void Bootstrap(Container a_container)
+        public void Bootstrap(IContainer a_container)
         {
             BootstrapCalled = true;
         }

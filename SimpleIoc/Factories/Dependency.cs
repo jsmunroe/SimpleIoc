@@ -59,7 +59,7 @@ namespace SimpleIoc.Factories
         /// Fulfill this dependency from the given container (<paramref name="a_container"/>).
         /// </summary>
         /// <param name="a_container">Container.</param>
-        public bool Fulfill(Container a_container)
+        public bool Fulfill(IContainer a_container)
         {
             var service = a_container.ResolveService(a_type: Contract);
             if (service == null)

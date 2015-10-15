@@ -17,6 +17,6 @@ namespace SimpleIoc.Contracts
         /// Bootstrap this instance against the given container (<paramref name="a_container"/>).
         /// </summary>
         /// <param name="a_container">Container.</param>
-        void Bootstrap(Container a_container);
+        void Bootstrap(IContainer a_container);
     }
 }
