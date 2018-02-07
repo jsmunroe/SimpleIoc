@@ -5,7 +5,7 @@ This is a simple to use universal inversion of control container.
 
 ```C#
     public interface IContract { ... }
-    public class MyService{ ... }
+    public class MyService : IContract { ... }
 
     var container = new Container();
     container.Register<IContract, MyService>();
