@@ -12,7 +12,7 @@ This is a simple to use universal inversion of control container.
     
     IContract service = container.Resolve<IContract>();
 
-    Assert.IsTrue(service is Service);
+    Assert.IsTrue(service is MyService);
 ```
 
 ##Constructor Injection
@@ -31,7 +31,7 @@ This is a simple to use universal inversion of control container.
 
     IContract service = container.Resolve<IContract>();
 
-    Assert.IsTrue(service is Service);
+    Assert.IsTrue(service is MyService);
 ```
 
 ##Function-Based Service Registry
