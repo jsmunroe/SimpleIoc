@@ -1,7 +1,7 @@
 # SimpleIOC
 This is a simple to use universal inversion of control container. 
 
-##Basic Usage
+## Basic Usage
 
 ```C#
     public interface IContract { ... }
@@ -15,7 +15,7 @@ This is a simple to use universal inversion of control container.
     Assert.IsTrue(service is MyService);
 ```
 
-##Constructor Injection
+## Constructor Injection
 
 ```C#
     public interface IContract { ... }
@@ -34,7 +34,7 @@ This is a simple to use universal inversion of control container.
     Assert.IsTrue(service is MyService);
 ```
 
-##Function-Based Service Registry
+## Function-Based Service Registry
 
 ```C#
     public interface IContract { ... }
@@ -52,7 +52,7 @@ This is a simple to use universal inversion of control container.
     Assert.AreSame(service, someService);
 ```
 
-##Property Injection
+## Property Injection
 
 ```C#
     public interface IContract { ... } 
@@ -73,7 +73,7 @@ This is a simple to use universal inversion of control container.
     Assert.IsInstanceOfType((service as MyService).Dependency, typeof(MyDependency));
 ```
     
-##Module Loader
+## Module Loader
 
 ```C#
     public MyModule : IModule 
