@@ -40,6 +40,23 @@ namespace SimpleIoc
         // TODO: Register with type parameters.
 
         /// <summary>
+        /// Registers a service implementation with the container for the specified contract type and optional lifespan.
+        /// </summary>
+        /// <param name="a_contract">The contract type that clients will request. Must not already be registered in the container.</param>
+        /// <param name="a_service">The concrete service type that implements the contract. Must be assignable to <paramref name="a_contract"/>.</param>
+        /// <param name="a_lifespan">An optional lifespan configuration that determines how the service instance is managed. If <see
+        /// langword="null"/>, the default lifespan is used.</param>
+        /// <exception cref="ContainerException">Thrown if a service is already registered for the specified contract type.</exception>
+        public void Register(Type a_contract, Type a_service, ILifespan a_lifespan = null)
+        {
+            if (_services.GetServices(a_contract).Any())
+                throw new ContainerException($"Service is already registered with contract type '{a_contract.Name}'.");
+
+            var newService = new Service(this, a_service, a_contract, a_lifespan);
+            _services.Add(newService);
+        }
+
+        /// <summary>
         /// Register the given service (<typeparamref name="TService"/>) as the given contract (<typeparamref name="TContract"/>).
         /// </summary>
         /// <param name="a_lifespan">Instance lifespan.</param>
@@ -48,11 +65,7 @@ namespace SimpleIoc
         public void Register<TContract, TService>(ILifespan a_lifespan = null)
             where TService : TContract
         {
-            if (_services.GetServices(typeof(TContract)).Any())
-                throw new ContainerException($"Service is already registered with contract type '{typeof(TContract).Name}'.");
-
-            var newService = new Service(this, typeof(TService), typeof(TContract), a_lifespan);
-            _services.Add(newService);
+            Register(typeof(TContract), typeof(TService), a_lifespan);
         }
 
         /// <summary>
@@ -317,6 +330,17 @@ namespace SimpleIoc
             var existing = _services.GetServices(a_type).FirstOrDefault();
             return existing;
         }
+
+        public object Build(Type a_type)
+        {
+            return BuildServiceForContract(a_type);
+        }
+
+        public TService Build<TService>()
+        {
+            return (TService)Build(typeof(TService));
+        }
+
 
         /// <summary>
         /// Create a child of this container.

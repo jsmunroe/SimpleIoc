@@ -149,6 +149,11 @@ namespace SimpleIoc.Contracts
         /// <returns>All service instances of the contract type.</returns>
         IEnumerable<object> ResolveAll(Type a_type);
 
+        object Build(Type a_type);
+
+        TService Build<TService>();
+
+
         /// <summary>
         /// Create a child of this container.
         /// </summary>

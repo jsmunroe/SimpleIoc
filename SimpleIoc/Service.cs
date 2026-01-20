@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Remoting.Channels;
 using SimpleIoc.Contracts;
 using SimpleIoc.Factories;
 using SimpleIoc.Lifespan;
@@ -182,6 +181,20 @@ namespace SimpleIoc
         /// Initializes a new instance of the <see cref="T:System.Attribute"/> class.
         /// </summary>
         public ImportAttribute(Type a_contractType = null)
+        {
+            ContractType = a_contractType;
+        }
+
+        public Type ContractType { get; }
+    }
+
+    [AttributeUsage(AttributeTargets.Class)]
+    public class ServiceAttribute : Attribute
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:System.Attribute"/> class.
+        /// </summary>
+        public ServiceAttribute(Type a_contractType = null)
         {
             ContractType = a_contractType;
         }
