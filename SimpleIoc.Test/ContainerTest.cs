@@ -81,7 +81,7 @@ namespace SimpleIoc.Test
 
             // Execute
             object service;
-            var result = container.TryResolve(typeof (ServiceBase), out service);
+            var result = container.TryResolve(typeof(ServiceBase), out service);
 
             // Assert
             Assert.IsTrue(result);
@@ -89,14 +89,16 @@ namespace SimpleIoc.Test
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ContainerException))]
         public void ResolveUnregisteredService()
         {
             // Setup
             var container = new Container();
 
-            // Execute
-            var service = container.Resolve<ServiceBase>();
+            var ex = Assert.Throws<ContainerException>(() =>
+            {
+                // Execute
+                var service = container.Resolve<ServiceBase>();
+            });
         }
 
         [TestMethod]
@@ -169,7 +171,7 @@ namespace SimpleIoc.Test
 
             // Execute
             object service;
-            var result = container.TryResolve(typeof (ServiceBase), "MyService", out service);
+            var result = container.TryResolve(typeof(ServiceBase), "MyService", out service);
 
             // Assert
             Assert.IsTrue(result);
@@ -200,7 +202,7 @@ namespace SimpleIoc.Test
 
             // Execute
             object service;
-            var result = container.TryResolve(typeof (ServiceBase), "MyService", out service);
+            var result = container.TryResolve(typeof(ServiceBase), "MyService", out service);
 
             // Assert
             Assert.IsTrue(result);
@@ -286,14 +288,16 @@ namespace SimpleIoc.Test
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void RegisterFuncServiceWithNull()
         {
             // Setup
             var container = new Container();
 
-            // Execute
-            container.Register<ServiceBase>(a_func: null);
+            var ex = Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Execute
+                container.Register<ServiceBase>(a_func: null);
+            });
         }
 
         [TestMethod]
@@ -339,52 +343,60 @@ namespace SimpleIoc.Test
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ContainerException))]
         public void RegisterTheSameContractWithNoNames()
         {
             // Setup
             var container = new Container();
 
-            // Execute
-            container.Register<DependencyBase, Dependency1>();
-            container.Register<DependencyBase, Dependency2>();
+            Assert.Throws<ContainerException>(() =>
+            {
+                // Execute
+                container.Register<DependencyBase, Dependency1>();
+                container.Register<DependencyBase, Dependency2>();
+            });
         }
 
 
         [TestMethod]
-        [ExpectedException(typeof(ContainerException))]
         public void RegisterTheSameContractWithSameName()
         {
             // Setup
             var container = new Container();
 
-            // Execute
-            container.Register<DependencyBase, Dependency1>("Dependency1");
-            container.Register<DependencyBase, Dependency2>("Dependency1");
+            Assert.Throws<ContainerException>(() =>
+            {
+                // Execute
+                container.Register<DependencyBase, Dependency1>("Dependency1");
+                container.Register<DependencyBase, Dependency2>("Dependency1");
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ContainerException))]
         public void RegisterTheSameContractWithOnlyFirstNamed()
         {
             // Setup
             var container = new Container();
 
-            // Execute
-            container.Register<DependencyBase, Dependency1>("Dependency1");
-            container.Register<DependencyBase, Dependency2>();
+            Assert.Throws<ContainerException>(() =>
+            {
+                // Execute
+                container.Register<DependencyBase, Dependency1>("Dependency1");
+                container.Register<DependencyBase, Dependency2>();
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ContainerException))]
         public void RegisterTheSameContractWithOnlySecondNamed()
         {
             // Setup
             var container = new Container();
 
-            // Execute
-            container.Register<DependencyBase, Dependency1>();
-            container.Register<DependencyBase, Dependency2>("Dependency2");
+            Assert.Throws<ContainerException>(() =>
+            {
+                // Execute
+                container.Register<DependencyBase, Dependency1>();
+                container.Register<DependencyBase, Dependency2>("Dependency2");
+            });
         }
 
 
@@ -405,14 +417,16 @@ namespace SimpleIoc.Test
 
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void RegisterInstanceWithNull()
         {
             // Setup
             var container = new Container();
 
-            // Execute
-            container.RegisterInstance<ServiceBase>(a_instance: null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Execute
+                container.RegisterInstance<ServiceBase>(a_instance: null);
+            });
         }
 
         [TestMethod]
@@ -431,14 +445,16 @@ namespace SimpleIoc.Test
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void RegisterInstanceWithNameAndNullInstance()
         {
             // Setup
             var container = new Container();
 
-            // Execute
-            container.RegisterInstance<ServiceBase>(a_instance: null, a_name: "noconstructors");
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Execute
+                container.RegisterInstance<ServiceBase>(a_instance: null, a_name: "noconstructors");
+            });
         }
 
         [TestMethod]
@@ -535,7 +551,7 @@ namespace SimpleIoc.Test
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof (ServiceWithNoConstructors));
+            Assert.IsInstanceOfType(result, typeof(ServiceWithNoConstructors));
         }
 
         [TestMethod]
@@ -560,6 +576,4 @@ namespace SimpleIoc.Test
 
 
     }
-
-
 }

@@ -22,26 +22,31 @@ namespace SimpleIoc.Test
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ConstructWithNullInstance()
         {
             // Setup
             var instance = new object();
 
-            // Execute
-            new InstanceService(a_contract: null, a_instance: instance, a_name: "instance");
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Execute
+                new InstanceService(a_contract: null, a_instance: instance, a_name: "instance");
+            });
+
         }
 
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ConstructWithNullContract()
         {
             // Setup
             var instance = new object();
 
-            // Execute
-            new InstanceService(a_contract: typeof(object), a_instance: null, a_name: "instance");
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Execute
+                new InstanceService(a_contract: typeof(object), a_instance: null, a_name: "instance");
+            });
         }
 
         [TestMethod]

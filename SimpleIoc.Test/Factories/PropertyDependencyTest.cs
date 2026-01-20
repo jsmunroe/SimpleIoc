@@ -22,22 +22,26 @@ namespace SimpleIoc.Test.Factories
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ConstrucWithNullConstract()
         {
             // Setup
             var property = typeof(ServiceWithRequiredProperty).GetProperty("Dependency");
 
-            // Execute
-            new PropertyDependency(a_contract: null, a_property: property);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Execute
+                new PropertyDependency(a_contract: null, a_property: property);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ConstructWithNullParamName()
         {
-            // Execute
-            new PropertyDependency(a_contract: typeof(ServiceBase), a_property: null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Execute
+                new PropertyDependency(a_contract: typeof(ServiceBase), a_property: null);
+            });
         }
     }
 }

@@ -10,7 +10,7 @@
     <Copyright>Copyright © JSMunroe.com 2026</Copyright>
     <AssemblyVersion>1.0.0</AssemblyVersion>
     <FileVersion>1.0.0</FileVersion>
-    <Version>1.0.1</Version>
+    <Version>1.1</Version>
     <Title>SimpleIoc</Title>
     <Authors>jsmunroe</Authors>
     <PackageProjectUrl>https://github.com/jsmunroe/SimpleIoc</PackageProjectUrl>

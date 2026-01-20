@@ -24,11 +24,13 @@ namespace SimpleIoc.Test.Factories
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ConstructInstanceFactoryWithNullInstance()
         {
-            // Execute
-            var factory = new InstanceFactory(a_instanceServiceService: null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Execute
+                var factory = new InstanceFactory(a_instanceServiceService: null);
+            });
         }
 
         [TestMethod]

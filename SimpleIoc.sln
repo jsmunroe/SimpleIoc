@@ -1,11 +1,10 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+# Visual Studio Version 18
+VisualStudioVersion = 18.1.11312.151
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleIoc", "SimpleIoc\SimpleIoc.csproj", "{66ED97C5-A1BE-4D8A-903F-65FAF24243D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleIoc", "SimpleIoc\SimpleIoc.csproj", "{66ED97C5-A1BE-4D8A-903F-65FAF24243D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleIoc.Test", "SimpleIoc.Test\SimpleIoc.Test.csproj", "{7E8C3D66-3AE8-42C9-9F09-06CFE8B5FC7F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleIoc.Test", "SimpleIoc.Test\SimpleIoc.Test.csproj", "{1401A474-1F8C-4ED4-B9E8-BDBC42B26A55}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,12 +16,15 @@ Global
 		{66ED97C5-A1BE-4D8A-903F-65FAF24243D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66ED97C5-A1BE-4D8A-903F-65FAF24243D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66ED97C5-A1BE-4D8A-903F-65FAF24243D4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7E8C3D66-3AE8-42C9-9F09-06CFE8B5FC7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7E8C3D66-3AE8-42C9-9F09-06CFE8B5FC7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7E8C3D66-3AE8-42C9-9F09-06CFE8B5FC7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7E8C3D66-3AE8-42C9-9F09-06CFE8B5FC7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1401A474-1F8C-4ED4-B9E8-BDBC42B26A55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1401A474-1F8C-4ED4-B9E8-BDBC42B26A55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1401A474-1F8C-4ED4-B9E8-BDBC42B26A55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1401A474-1F8C-4ED4-B9E8-BDBC42B26A55}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {52489FAC-4119-4C14-9C64-8C6D120AFA3A}
 	EndGlobalSection
 EndGlobal

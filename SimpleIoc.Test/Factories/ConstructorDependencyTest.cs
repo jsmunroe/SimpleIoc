@@ -18,19 +18,23 @@ namespace SimpleIoc.Test.Factories
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ConstrucWithNullConstract()
         {
-            // Execute
-            new ConstructorDependency(a_contract: null, a_paramName: "a_param");
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Execute
+                new ConstructorDependency(a_contract: null, a_paramName: "a_param");
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ConstructWithNullParamName()
         {
-            // Execute
-            new ConstructorDependency(a_contract: typeof (ServiceBase), a_paramName: null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Execute
+                new ConstructorDependency(a_contract: typeof (ServiceBase), a_paramName: null);
+            });
         }
     }
 }

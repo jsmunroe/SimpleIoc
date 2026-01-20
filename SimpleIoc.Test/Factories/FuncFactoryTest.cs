@@ -15,11 +15,13 @@ namespace SimpleIoc.Test.Factories
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ConstructFuncFactoryWithNull()
         {
-            // Execute
-            new FuncFactory<ServiceBase>(a_func: null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Execute
+                new FuncFactory<ServiceBase>(a_func: null);
+            });
         }
 
         [TestMethod]

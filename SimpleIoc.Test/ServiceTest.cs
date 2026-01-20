@@ -21,29 +21,35 @@ namespace SimpleIoc.Test
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ConstructServiceWithNullContractType()
         {
-            // Execute
-            var container = new Container();
-            new Service(a_container: container, a_type: typeof(string), a_contract: null, a_lifespan: null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Execute
+                var container = new Container();
+                new Service(a_container: container, a_type: typeof(string), a_contract: null, a_lifespan: null);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ConstructServiceWithNullType()
         {
-            // Execute
-            var container = new Container();
-            new Service(a_container: container, a_type: null, a_contract: null, a_lifespan: null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Execute
+                var container = new Container();
+                new Service(a_container: container, a_type: null, a_contract: null, a_lifespan: null);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ConstructServiceWithNullContainer()
         {
-            // Execute
-            new Service(a_container: null, a_type: typeof(string), a_contract: typeof(string), a_lifespan: null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Execute
+                new Service(a_container: null, a_type: typeof(string), a_contract: typeof(string), a_lifespan: null);
+            });
         }
 
         [TestMethod]
@@ -137,19 +143,21 @@ namespace SimpleIoc.Test
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void ResolveServiceForTypeWithOneConstructorWithoutFulfilling()
         {
             // Setup
             var container = new Container();
             var service = new Service(container, typeof(ServiceWithOneConstructor), typeof(ServiceBase), a_lifespan: null);
             
-            // Execute
-            var serviceInstance = service.Resolve();
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                // Execute
+                var serviceInstance = service.Resolve();
 
-            // Assert
-            Assert.IsNotNull(serviceInstance);
-            Assert.IsInstanceOfType(serviceInstance, typeof(ServiceWithOneConstructor));
+                // Assert
+                Assert.IsNotNull(serviceInstance);
+                Assert.IsInstanceOfType(serviceInstance, typeof(ServiceWithOneConstructor));
+            });
         }
 
         [TestMethod]

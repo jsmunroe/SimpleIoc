@@ -22,7 +22,6 @@ namespace SimpleIoc.Test.Factories
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ConstructConstructorWithNullService()
         {
             // Setup
@@ -31,12 +30,14 @@ namespace SimpleIoc.Test.Factories
             var type = typeof(ServiceWithDefaultConstructor);
             var constructor = type.GetConstructors().First();
 
-            // Execute
-            var factory = new ActivateFactory(a_service: null, a_constructor: constructor);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Execute
+                var factory = new ActivateFactory(a_service: null, a_constructor: constructor);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ConstructConstructorWithNullConstructor()
         {
             // Setup
@@ -45,8 +46,11 @@ namespace SimpleIoc.Test.Factories
             var type = typeof(ServiceWithDefaultConstructor);
             var constructor = type.GetConstructors().First();
 
-            // Execute
-            var factory = new ActivateFactory(a_service: service, a_constructor: null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Execute
+                var factory = new ActivateFactory(a_service: service, a_constructor: null);
+            });
         }
 
         [TestMethod]
@@ -68,7 +72,6 @@ namespace SimpleIoc.Test.Factories
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void CreateServiceWithUnfulfilledDependency()
         {
             // Setup
@@ -78,8 +81,11 @@ namespace SimpleIoc.Test.Factories
             var constructor = type.GetConstructors().First();
             var factory = new ActivateFactory(a_service: service, a_constructor: constructor);
 
-            // Execute
-            var result = factory.Create();
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                // Execute
+                var result = factory.Create();
+            });
         }
 
         [TestMethod]

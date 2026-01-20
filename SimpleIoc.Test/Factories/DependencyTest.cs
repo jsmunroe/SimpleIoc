@@ -18,11 +18,13 @@ namespace SimpleIoc.Test.Factories
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ConstructWithNullDependencyType()
         {
-            // Execute
-            new Dependency(a_contract: null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Execute
+                new Dependency(a_contract: null);
+            });
         }
 
         [TestMethod]
@@ -51,7 +53,6 @@ namespace SimpleIoc.Test.Factories
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void FulfillWithServiceOfWrongType()
         {
             // Setup
@@ -59,19 +60,24 @@ namespace SimpleIoc.Test.Factories
             var service = new Service(container, typeof(Dependency2), typeof(DependencyBase), null);
             var dependency = new Dependency(typeof (Dependency1));
 
-            // Execute
-            dependency.Fulfill(a_service: service);
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                // Execute
+                dependency.Fulfill(a_service: service);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void FulfillWithNull()
         {
             // Setup
             var dependency = new Dependency(typeof(Dependency1));
 
-            // Execute
-            dependency.Fulfill(a_service: null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Execute
+                dependency.Fulfill(a_service: null);
+            });
         }
 
         [TestMethod]
@@ -90,7 +96,6 @@ namespace SimpleIoc.Test.Factories
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void FulfillWithSuperclassService()
         {
             // Setup
@@ -98,8 +103,11 @@ namespace SimpleIoc.Test.Factories
             var service = new Service(container, typeof(DependencyBase), typeof(DependencyBase), null);
             var dependency = new Dependency(typeof(Dependency2));
 
-            // Execute
-            dependency.Fulfill(a_service: service);
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                // Execute
+                dependency.Fulfill(a_service: service);
+            });
         }
 
         [TestMethod]

@@ -28,27 +28,31 @@ namespace SimpleIoc.Test
 
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void AddServiceWithNull()
         {
             // Setup
             var listing = new ServiceContractListing();
 
-            // Execute
-            listing.Add(a_service: null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Execute
+                listing.Add(a_service: null);
+            });
         }
 
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void AddServiceWithNullContractType()
         {
             // Setup
             var listing = new ServiceContractListing();
             var service = new TestService { Contract = null, Name = "Service1" };
 
-            // Execute
-            listing.Add(service);
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                // Execute
+                listing.Add(service);
+            });
         }
 
 
@@ -83,7 +87,6 @@ namespace SimpleIoc.Test
 
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void GetServicesWithNullContractType()
         {
             // Setup
@@ -92,8 +95,11 @@ namespace SimpleIoc.Test
             var service = new TestService { Contract = contractType, Name = "Service1" };
             listing.Add(service);
 
-            // Execute
-            listing.GetServices(a_contract: null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Execute
+                listing.GetServices(a_contract: null);
+            });
         }
 
 
@@ -131,7 +137,6 @@ namespace SimpleIoc.Test
 
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void GetServiceWithContractTypeAndNullName()
         {
             // Setup
@@ -140,8 +145,11 @@ namespace SimpleIoc.Test
             var service = new TestService { Contract = contractType, Name = "Service1" };
             listing.Add(service);
 
-            // Execute
-            var result = listing.GetService(contractType, a_name:null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Execute
+                var result = listing.GetService(contractType, a_name:null);
+            });
         }
 
         [TestMethod]

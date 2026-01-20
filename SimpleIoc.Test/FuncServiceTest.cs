@@ -14,11 +14,13 @@ namespace SimpleIoc.Test
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ConstructFuncServiceWithNull()
         {
-            // Execute
-            new FuncService<ServiceBase>(a_func: null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Execute
+                new FuncService<ServiceBase>(a_func: null);
+            });
         }
 
         [TestMethod]

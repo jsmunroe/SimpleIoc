@@ -45,14 +45,16 @@ namespace SimpleIoc.Test.Lifespan
 
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void HoldInstanceWithNull()
         {
             // Setup
             var lifespan = new CacheLifespan();
 
-            // Execute
-            lifespan.Hold(a_instance: null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                // Execute
+                lifespan.Hold(a_instance: null);
+            });
         }
 
         [TestMethod]
